@@ -1,0 +1,138 @@
+[
+  {
+    "title": "Fall of Western Roman Empire",
+    "start_year": 430,
+    "end_year": 476
+  },
+  {
+    "title": "Byzantine Golden Age",
+    "start_year": 527,
+    "end_year": 565
+  },
+  {
+    "title": "Rise of Islam",
+    "start_year": 610,
+    "end_year": 632
+  },
+  {
+    "title": "Tang Dynasty Peak",
+    "start_year": 618,
+    "end_year": 907
+  },
+  {
+    "title": "Viking Age",
+    "start_year": 793,
+    "end_year": 1066
+  },
+  {
+    "title": "Norman Conquest of England",
+    "start_year": 1066,
+    "end_year": 1066
+  },
+  {
+    "title": "Crusades Period",
+    "start_year": 1096,
+    "end_year": 1291
+  },
+  {
+    "title": "Mongol Empire Expansion",
+    "start_year": 1206,
+    "end_year": 1368
+  },
+  {
+    "title": "Renaissance Begins",
+    "start_year": 1300,
+    "end_year": 1600
+  },
+  {
+    "title": "Age of Discovery",
+    "start_year": 1415,
+    "end_year": 1600
+  },
+  {
+    "title": "Protestant Reformation",
+    "start_year": 1517,
+    "end_year": 1648
+  },
+  {
+    "title": "Scientific Revolution",
+    "start_year": 1543,
+    "end_year": 1687
+  },
+  {
+    "title": "Industrial Revolution",
+    "start_year": 1760,
+    "end_year": 1840
+  },
+  {
+    "title": "American Revolution",
+    "start_year": 1775,
+    "end_year": 1783
+  },
+  {
+    "title": "French Revolution",
+    "start_year": 1789,
+    "end_year": 1799
+  },
+  {
+    "title": "World War I",
+    "start_year": 1914,
+    "end_year": 1918
+  },
+  {
+    "title": "World War II",
+    "start_year": 1939,
+    "end_year": 1945
+  },
+  {
+    "title": "Space Age Begins",
+    "start_year": 1957,
+    "end_year": 1969
+  },
+  {
+    "title": "Digital Revolution",
+    "start_year": 1980,
+    "end_year": 2000
+  },
+  {
+    "title": "Global Internet Era",
+    "start_year": 1990,
+    "end_year": 2010
+  },
+  {
+    "title": "Event A",
+    "start_year": 2001,
+    "end_year": 2004
+  },
+  {
+    "title": "Project Alpha",
+    "start_year": 2005,
+    "end_year": 2008
+  },
+  {
+    "title": "Event B",
+    "start_year": 2010,
+    "end_year": 2012
+  },
+  {
+    "title": "Development Phase",
+    "start_year": 2013,
+    "end_year": 2015
+  },
+  {
+    "title": "Launch Campaign",
+    "start_year": 2016,
+    "end_year": 2017
+  },
+  {
+    "title": "Expansion Period",
+    "start_year": 2018,
+    "end_year": 2020
+  },
+  {
+    "title": "AI Revolution",
+    "start_year": 2020,
+    "end_year": 2025
+  }
+]
+
