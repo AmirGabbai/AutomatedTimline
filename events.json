@@ -2,137 +2,163 @@
   {
     "title": "Fall of Western Roman Empire",
     "start_year": 430,
-    "end_year": 476
+    "end_year": 476,
+    "categories": ["war"]
   },
   {
     "title": "Byzantine Golden Age",
     "start_year": 527,
-    "end_year": 565
+    "end_year": 565,
+    "categories": ["culture"]
   },
   {
     "title": "Rise of Islam",
     "start_year": 610,
-    "end_year": 632
+    "end_year": 632,
+    "categories": ["culture"]
   },
   {
     "title": "Tang Dynasty Peak",
     "start_year": 618,
-    "end_year": 907
+    "end_year": 907,
+    "categories": ["culture"]
   },
   {
     "title": "Viking Age",
     "start_year": 793,
-    "end_year": 1066
+    "end_year": 1066,
+    "categories": ["war"]
   },
   {
     "title": "Norman Conquest of England",
     "start_year": 1066,
-    "end_year": 1066
+    "end_year": 1066,
+    "categories": ["war"]
   },
   {
     "title": "Crusades Period",
     "start_year": 1096,
-    "end_year": 1291
+    "end_year": 1291,
+    "categories": ["war", "culture"]
   },
   {
     "title": "Mongol Empire Expansion",
     "start_year": 1206,
-    "end_year": 1368
+    "end_year": 1368,
+    "categories": ["war"]
   },
   {
     "title": "Renaissance Begins",
     "start_year": 1300,
-    "end_year": 1600
+    "end_year": 1600,
+    "categories": ["culture"]
   },
   {
     "title": "Age of Discovery",
     "start_year": 1415,
-    "end_year": 1600
+    "end_year": 1600,
+    "categories": ["technology", "culture"]
   },
   {
     "title": "Protestant Reformation",
     "start_year": 1517,
-    "end_year": 1648
+    "end_year": 1648,
+    "categories": ["culture"]
   },
   {
     "title": "Scientific Revolution",
     "start_year": 1543,
-    "end_year": 1687
+    "end_year": 1687,
+    "categories": ["technology"]
   },
   {
     "title": "Industrial Revolution",
     "start_year": 1760,
-    "end_year": 1840
+    "end_year": 1840,
+    "categories": ["technology"]
   },
   {
     "title": "American Revolution",
     "start_year": 1775,
-    "end_year": 1783
+    "end_year": 1783,
+    "categories": ["war"]
   },
   {
     "title": "French Revolution",
     "start_year": 1789,
-    "end_year": 1799
+    "end_year": 1799,
+    "categories": ["war", "culture"]
   },
   {
     "title": "World War I",
     "start_year": 1914,
-    "end_year": 1918
+    "end_year": 1918,
+    "categories": ["war"]
   },
   {
     "title": "World War II",
     "start_year": 1939,
-    "end_year": 1945
+    "end_year": 1945,
+    "categories": ["war"]
   },
   {
     "title": "Space Age Begins",
     "start_year": 1957,
-    "end_year": 1969
+    "end_year": 1969,
+    "categories": ["technology"]
   },
   {
     "title": "Digital Revolution",
     "start_year": 1980,
-    "end_year": 2000
+    "end_year": 2000,
+    "categories": ["technology"]
   },
   {
     "title": "Global Internet Era",
     "start_year": 1990,
-    "end_year": 2010
+    "end_year": 2010,
+    "categories": ["technology"]
   },
   {
     "title": "Event A",
     "start_year": 2001,
-    "end_year": 2004
+    "end_year": 2004,
+    "categories": ["culture"]
   },
   {
     "title": "Project Alpha",
     "start_year": 2005,
-    "end_year": 2008
+    "end_year": 2008,
+    "categories": ["technology"]
   },
   {
     "title": "Event B",
     "start_year": 2010,
-    "end_year": 2012
+    "end_year": 2012,
+    "categories": ["culture"]
   },
   {
     "title": "Development Phase",
     "start_year": 2013,
-    "end_year": 2015
+    "end_year": 2015,
+    "categories": ["technology"]
   },
   {
     "title": "Launch Campaign",
     "start_year": 2016,
-    "end_year": 2017
+    "end_year": 2017,
+    "categories": ["technology","art"]
   },
   {
     "title": "Expansion Period",
     "start_year": 2018,
-    "end_year": 2020
+    "end_year": 2020,
+    "categories": ["culture","war"]
   },
   {
     "title": "AI Revolution",
     "start_year": 2020,
-    "end_year": 2025
+    "end_year": 2025,
+    "categories": ["technology", "culture","war"]
   }
 ]
-
