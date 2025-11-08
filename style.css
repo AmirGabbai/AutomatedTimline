@@ -63,12 +63,7 @@ body {
     height: 400px;
     overflow-x: auto;
     overflow-y: visible;
-    /* Hide scrollbars visually but keep overflow-x functionality */
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none;  /* IE and Edge */
-}
-.timeline-container::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
+
 }
 
 

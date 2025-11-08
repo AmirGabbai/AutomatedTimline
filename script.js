@@ -69,9 +69,20 @@ function renderTimeline() {
     
     const timelineWidth = getTimelineWidth();
     
-    // Set container width
     const container = document.querySelector('.timeline-container');
-    container.style.width = `${timelineWidth}px`;
+    // Keep the visible container constrained to the viewport so the
+    // earliest years stay in view, and place the width on the layers
+    // inside the scrollable area instead.
+    container.style.width = '100%';
+    eventsLayer.style.width = `${timelineWidth}px`;
+    yearsLayer.style.width = `${timelineWidth}px`;
+
+    const timelineLine = container.querySelector('.timeline-line');
+    if (timelineLine) {
+        timelineLine.style.width = `${timelineWidth}px`;
+    }
+
+    container.scrollLeft = (minYear - minYear) * yearWidth;
     
     // Render year labels
     renderYearLabels();
@@ -142,7 +153,7 @@ function renderEvents() {
  * All elements smoothly transition due to CSS transitions
  */
 const maxZoomIn = 400;
-const maxZoomOut = 100;
+const maxZoomOut = 10;
 function updateZoom(newYearWidth) {
     yearWidth = newYearWidth;
     renderTimeline();
