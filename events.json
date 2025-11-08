@@ -160,5 +160,11 @@
     "start_year": 2020,
     "end_year": 2025,
     "categories": ["technology", "culture","war"]
+  },
+  {
+    "title": "Event C",
+    "start_year": 2024,
+    "end_year": 2024,
+    "categories": ["culture","war"]
   }
 ]
