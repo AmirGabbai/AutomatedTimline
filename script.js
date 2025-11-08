@@ -89,6 +89,9 @@ async function loadEvents() {
         // Extract categories and map them to colors
         mapCategoriesToColors();
         
+        // Read URL parameters to set initial category visibility
+        readURLParams();
+        
         // Render category buttons
         renderCategoryButtons();
         
@@ -251,11 +254,59 @@ function renderCategoryButtons() {
         const categoryColor = categoryColors[category] || defaultColor;
         button.style.backgroundColor = categoryColor;
         
+        // Set initial button state based on hiddenCategories
+        if (hiddenCategories[category]) {
+            button.classList.add('hidden');
+        }
+        
         // Add click handler to toggle visibility
         button.addEventListener('click', () => toggleCategoryVisibility(category, button));
         
         categoriesMenu.appendChild(button);
     });
+}
+
+/**
+ * Updates the URL with the current hidden categories
+ * Uses URLSearchParams to manage query parameters
+ */
+function updateURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // Get all hidden categories
+    const hiddenCats = Object.keys(hiddenCategories).filter(cat => hiddenCategories[cat]);
+    
+    if (hiddenCats.length > 0) {
+        // Set the 'hide' parameter with comma-separated category names
+        urlParams.set('hide', hiddenCats.join(','));
+    } else {
+        // Remove the parameter if no categories are hidden
+        urlParams.delete('hide');
+    }
+    
+    // Update URL without reloading the page
+    const newURL = window.location.pathname + (urlParams.toString() ? '?' + urlParams.toString() : '');
+    window.history.pushState({}, '', newURL);
+}
+
+/**
+ * Reads URL parameters and sets initial category visibility
+ * Supports 'hide' parameter with comma-separated category names
+ */
+function readURLParams() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const hideParam = urlParams.get('hide');
+    
+    if (hideParam) {
+        // Split comma-separated categories and mark them as hidden
+        const categoriesToHide = hideParam.split(',').map(cat => cat.trim());
+        
+        categoriesToHide.forEach(category => {
+            if (category && category in categoryColors) {
+                hiddenCategories[category] = true;
+            }
+        });
+    }
 }
 
 /**
@@ -273,6 +324,9 @@ function toggleCategoryVisibility(category, button) {
     } else {
         button.classList.remove('hidden');
     }
+    
+    // Update URL to reflect the change
+    updateURL();
     
     // Re-render events to reflect visibility changes
     renderEvents();
@@ -387,6 +441,37 @@ function displayError(message) {
 }
 
 /**
+ * Handles browser back/forward navigation
+ * Updates category visibility when URL changes
+ */
+function handlePopState() {
+    // Only handle if events are loaded
+    if (events.length === 0) return;
+    
+    // Reset all categories to visible first
+    Object.keys(hiddenCategories).forEach(category => {
+        hiddenCategories[category] = false;
+    });
+    
+    // Read URL parameters again
+    readURLParams();
+    
+    // Update button states
+    const buttons = categoriesMenu.querySelectorAll('.category-btn');
+    buttons.forEach(button => {
+        const category = button.getAttribute('data-category');
+        if (hiddenCategories[category]) {
+            button.classList.add('hidden');
+        } else {
+            button.classList.remove('hidden');
+        }
+    });
+    
+    // Re-render events
+    renderEvents();
+}
+
+/**
  * Initialize the timeline when the page loads
  */
 function init() {
@@ -397,6 +482,9 @@ function init() {
     // Initialize button states
     zoomInBtn.disabled = false;
     zoomOutBtn.disabled = false;
+    
+    // Listen for browser back/forward navigation
+    window.addEventListener('popstate', handlePopState);
     
     // Load events and render timeline
     loadEvents();
