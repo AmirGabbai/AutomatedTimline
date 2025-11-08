@@ -31,8 +31,8 @@ async function loadEvents() {
         minYear = Math.min(...events.map(event => event.start_year));
         maxYear = Math.max(...events.map(event => event.end_year));
         
-        // Initialize the timeline
-        renderTimeline();
+        // Initialize the timeline (scroll to end on initial load)
+        renderTimeline(true);
     } catch (error) {
         console.error('Error loading events:', error);
         
@@ -63,13 +63,16 @@ function getTimelineWidth() {
 
 /**
  * Renders the entire timeline including year labels and events
+ * @param {boolean} scrollToEnd - If true, scrolls to the end after rendering (for initial load)
+ * @param {number|null} centerYear - The year to keep centered in viewport (for zoom preservation)
  */
-function renderTimeline() {
+function renderTimeline(scrollToEnd = false, centerYear = null) {
     if (minYear === null || maxYear === null) return;
+    
+    const container = document.querySelector('.timeline-container');
     
     const timelineWidth = getTimelineWidth();
     
-    const container = document.querySelector('.timeline-container');
     // Keep the visible container constrained to the viewport so the
     // earliest years stay in view, and place the width on the layers
     // inside the scrollable area instead.
@@ -82,13 +85,26 @@ function renderTimeline() {
         timelineLine.style.width = `${timelineWidth}px`;
     }
 
-    container.scrollLeft = (minYear - minYear) * yearWidth;
-    
     // Render year labels
     renderYearLabels();
     
     // Render events
     renderEvents();
+    
+    // Set scroll position after rendering
+    setTimeout(() => {
+        if (scrollToEnd) {
+            // Initial load: scroll to the end
+            container.scrollLeft = container.scrollWidth - container.clientWidth;
+        } else if (centerYear !== null) {
+            // Zoom: preserve the center year in view
+            const newCenterPosition = (centerYear - minYear) * yearWidth;
+            const targetScrollLeft = newCenterPosition - container.clientWidth / 2;
+            // Ensure scroll position is within bounds
+            const maxScroll = container.scrollWidth - container.clientWidth;
+            container.scrollLeft = Math.max(0, Math.min(targetScrollLeft, maxScroll));
+        }
+    }, 0);
 }
 
 /**
@@ -140,9 +156,13 @@ function renderEvents() {
         const leftPosition = (event.start_year - minYear) * yearWidth;
         eventDiv.style.left = `${leftPosition}px`;
         
-        // Stagger events vertically to avoid overlap
+        // Stagger events vertically to avoid overlap, starting from the bottom
+        const eventsLayerHeight = 280; // Match the height from CSS
+        const eventHeight = 40; // Match the event height from CSS
         const verticalOffset = (index % 3) * 70; // Cycle through 3 vertical positions
-        eventDiv.style.top = `${verticalOffset}px`;
+        // Calculate top position from bottom: layer height - event height - vertical offset
+        const topPosition = eventsLayerHeight - eventHeight - verticalOffset;
+        eventDiv.style.top = `${topPosition}px`;
         
         eventsLayer.appendChild(eventDiv);
     });
@@ -152,11 +172,22 @@ function renderEvents() {
  * Updates the yearWidth variable and re-renders the timeline
  * All elements smoothly transition due to CSS transitions
  */
-const maxZoomIn = 400;
-const maxZoomOut = 10;
+const maxZoomIn = 200;
+const maxZoomOut = 35;
 function updateZoom(newYearWidth) {
+    const container = document.querySelector('.timeline-container');
+    
+    // Calculate which year is currently in the center of the viewport BEFORE updating yearWidth
+    let centerYear = null;
+    if (container.scrollWidth > 0) {
+        const currentScrollLeft = container.scrollLeft;
+        const viewportCenter = currentScrollLeft + container.clientWidth / 2;
+        // Calculate which year this corresponds to based on CURRENT (old) yearWidth
+        centerYear = minYear + (viewportCenter / yearWidth);
+    }
+    
     yearWidth = newYearWidth;
-    renderTimeline();
+    renderTimeline(false, centerYear);
     
     // Update button states (optional: disable at min/max zoom)
     zoomInBtn.disabled = yearWidth >= maxZoomIn; // Max zoom in
