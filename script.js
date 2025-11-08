@@ -138,6 +138,7 @@ function renderTimeline(scrollToEnd = false, centerYear = null) {
     if (minYear === null || maxYear === null) return;
     
     const container = document.querySelector('.timeline-container');
+    const scrollable = document.querySelector('.timeline-scrollable');
     
     const timelineWidth = getTimelineWidth();
     
@@ -148,7 +149,7 @@ function renderTimeline(scrollToEnd = false, centerYear = null) {
     eventsLayer.style.width = `${timelineWidth}px`;
     yearsLayer.style.width = `${timelineWidth}px`;
 
-    const timelineLine = container.querySelector('.timeline-line');
+    const timelineLine = scrollable.querySelector('.timeline-line');
     if (timelineLine) {
         timelineLine.style.width = `${timelineWidth}px`;
     }
@@ -163,14 +164,14 @@ function renderTimeline(scrollToEnd = false, centerYear = null) {
     setTimeout(() => {
         if (scrollToEnd) {
             // Initial load: scroll to the end
-            container.scrollLeft = container.scrollWidth - container.clientWidth;
+            scrollable.scrollLeft = scrollable.scrollWidth - scrollable.clientWidth;
         } else if (centerYear !== null) {
             // Zoom: preserve the center year in view
             const newCenterPosition = (centerYear - minYear) * yearWidth;
-            const targetScrollLeft = newCenterPosition - container.clientWidth / 2;
+            const targetScrollLeft = newCenterPosition - scrollable.clientWidth / 2;
             // Ensure scroll position is within bounds
-            const maxScroll = container.scrollWidth - container.clientWidth;
-            container.scrollLeft = Math.max(0, Math.min(targetScrollLeft, maxScroll));
+            const maxScroll = scrollable.scrollWidth - scrollable.clientWidth;
+            scrollable.scrollLeft = Math.max(0, Math.min(targetScrollLeft, maxScroll));
         }
     }, 0);
 }
@@ -397,13 +398,13 @@ function renderEvents() {
 const maxZoomIn = 200;
 const maxZoomOut = 35;
 function updateZoom(newYearWidth) {
-    const container = document.querySelector('.timeline-container');
+    const scrollable = document.querySelector('.timeline-scrollable');
     
     // Calculate which year is currently in the center of the viewport BEFORE updating yearWidth
     let centerYear = null;
-    if (container.scrollWidth > 0) {
-        const currentScrollLeft = container.scrollLeft;
-        const viewportCenter = currentScrollLeft + container.clientWidth / 2;
+    if (scrollable.scrollWidth > 0) {
+        const currentScrollLeft = scrollable.scrollLeft;
+        const viewportCenter = currentScrollLeft + scrollable.clientWidth / 2;
         // Calculate which year this corresponds to based on CURRENT (old) yearWidth
         centerYear = minYear + (viewportCenter / yearWidth);
     }

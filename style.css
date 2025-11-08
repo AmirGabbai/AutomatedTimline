@@ -18,26 +18,35 @@ body {
 
 /* Zoom Controls */
 .controls {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
     display: flex;
     gap: 10px;
     z-index: 1000;
+    pointer-events: none;
+}
+
+.controls .zoom-btn {
+    pointer-events: auto;
 }
 
 .zoom-btn {
-    padding: 10px 20px;
-    font-size: 16px;
+    width: 55px;
+    height: 55px;
+    padding: 0;
+    font-size: 24px;
     font-weight: 600;
     color: white;
     background-color: #4a90e2;
     border: none;
-    border-radius: 5px;
+    border-radius: 50%;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.1s ease;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .zoom-btn:hover {
@@ -94,6 +103,7 @@ body {
     transition: all 0.3s ease;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     text-transform: capitalize;
+    border-radius: 5px;
 }
 
 .category-btn:hover {
@@ -122,9 +132,77 @@ body {
     position: relative;
     width: 100%;
     height: 500px;
+}
+
+/* Timeline Scrollable Content */
+.timeline-scrollable {
+    position: relative;
+    width: 100%;
+    height: 100%;
     overflow-x: auto;
     overflow-y: visible;
+    /* Firefox scrollbar styling */
+    scrollbar-width: auto;
+}
 
+/* Custom Scrollbar Styling for Timeline Scrollable (Webkit browsers) */
+.timeline-scrollable::-webkit-scrollbar {
+    height: 15px;
+}
+
+.timeline-scrollable::-webkit-scrollbar-track {
+    background: #e0e0e0;
+    border: 2px solid #d0d0d0;
+}
+
+.timeline-scrollable::-webkit-scrollbar-thumb {
+    background: linear-gradient(90deg, #4a90e2, #357abd);
+    border-radius: 12px;
+    border: 3px solid #e0e0e0;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(74, 144, 226, 0.4);
+}
+
+.timeline-scrollable::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(90deg, #357abd, #2a5f8f);
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.6);
+    border: 3px solid #d0d0d0;
+}
+
+.timeline-scrollable::-webkit-scrollbar-thumb:active {
+    background: linear-gradient(90deg, #2a5f8f, #1e4a6b);
+    box-shadow: 0 2px 6px rgba(74, 144, 226, 0.5);
+}
+
+/* Scrollbar Buttons (left/right arrows) */
+.timeline-scrollable::-webkit-scrollbar-button {
+    display: block;
+    width: 15px;
+    height: 15px;
+    background-color: #e0e0e0;
+    border: 1px solid #d0d0d0;
+}
+
+.timeline-scrollable::-webkit-scrollbar-button:hover {
+    background-color: #d0d0d0;
+}
+
+.timeline-scrollable::-webkit-scrollbar-button:active {
+    background-color: #c0c0c0;
+}
+
+/* Left arrow button */
+.timeline-scrollable::-webkit-scrollbar-button:horizontal:decrement {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 8 8'%3E%3Cpath fill='%23333' d='M3 2L1 4l2 2V2z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* Right arrow button */
+.timeline-scrollable::-webkit-scrollbar-button:horizontal:increment {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 8 8'%3E%3Cpath fill='%23333' d='M5 2l2 2-2 2V2z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 
