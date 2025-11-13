@@ -3,168 +3,259 @@
     "title": "Fall of Western Roman Empire",
     "start_year": 430,
     "end_year": 476,
-    "categories": ["war"]
+    "videoURL": [
+      "https://www.youtube.com/watch?v=wrOo0sWDzOw"
+    ],
+    "descriptions": {
+      "war": "Decline of imperial authority, barbarian incursions, and the final collapse of Roman military power in the West."
+    }
   },
   {
     "title": "Byzantine Golden Age",
     "start_year": 527,
     "end_year": 565,
-    "categories": ["culture"]
+    "descriptions": {
+      "culture": "Flourishing of Byzantine art, architecture, and theology under Justinian I, including mosaics and church building."
+    }
   },
   {
     "title": "Rise of Islam",
     "start_year": 610,
     "end_year": 632,
-    "categories": ["culture"]
+    "descriptions": {
+      "culture": "Spread of Islamic teachings, establishment of religious institutions, and new cultural norms across the Arabian Peninsula."
+    }
   },
   {
     "title": "Tang Dynasty Peak",
     "start_year": 618,
     "end_year": 907,
-    "categories": ["culture"]
+    "descriptions": {
+      "culture": "Golden era of Chinese poetry, painting, and cosmopolitan exchanges along the Silk Road."
+    }
   },
   {
     "title": "Viking Age",
     "start_year": 793,
     "end_year": 1066,
-    "categories": ["war"]
+    "descriptions": {
+      "war": "Seaborne raids, territorial expansion, and warrior culture shaping Northern Europe."
+    }
   },
   {
     "title": "Norman Conquest of England",
     "start_year": 1066,
     "end_year": 1066,
-    "categories": ["war"]
+    "descriptions": {
+      "war": "Battle of Hastings and subsequent consolidation of Norman rule over England."
+    }
   },
   {
     "title": "Crusades Period",
     "start_year": 1096,
     "end_year": 1291,
-    "categories": ["war", "culture"]
+    "descriptions": {
+      "war": "Series of military campaigns between European crusaders and Middle Eastern powers over holy sites.",
+      "culture": "Cross-cultural contact leading to exchanges in knowledge, trade goods, and religious practices."
+    }
   },
   {
     "title": "Mongol Empire Expansion",
     "start_year": 1206,
     "end_year": 1368,
-    "categories": ["war"]
+    "descriptions": {
+      "war": "Rapid conquests led by Genghis Khan and successors, creating the largest contiguous land empire."
+    }
   },
   {
     "title": "Renaissance Begins",
     "start_year": 1300,
     "end_year": 1600,
-    "categories": ["culture"]
+    "descriptions": {
+      "culture": "Revival of classical learning, humanism, and artistic innovation across Italian city-states."
+    }
   },
   {
     "title": "Age of Discovery",
     "start_year": 1415,
     "end_year": 1600,
-    "categories": ["technology", "culture"]
+    "videoURL": [
+      "https://www.youtube.com/watch?v=T8EW0skmZ_o"
+    ],
+    "descriptions": {
+      "technology": "Advances in navigation, shipbuilding, and cartography enabling transoceanic voyages.",
+      "culture": "Encounters between civilizations reshaping worldviews, trade networks, and colonial ambitions."
+    }
   },
   {
     "title": "Protestant Reformation",
     "start_year": 1517,
     "end_year": 1648,
-    "categories": ["culture"]
+    "descriptions": {
+      "culture": "Religious upheaval challenging Catholic authority and fostering new denominations and social reforms."
+    }
   },
   {
     "title": "Scientific Revolution",
     "start_year": 1543,
     "end_year": 1687,
-    "categories": ["technology"]
+    "videoURL": [
+      "https://www.youtube.com/watch?v=q2L6nXLKeAI"
+    ],
+    "descriptions": {
+      "technology": "Breakthroughs in astronomy, physics, and scientific method transforming understandings of the natural world."
+    }
   },
   {
     "title": "Industrial Revolution",
     "start_year": 1760,
     "end_year": 1840,
-    "categories": ["technology"]
+    "videoURL": [
+      "https://www.youtube.com/watch?v=zhL5DCizj5c"
+    ],
+    "descriptions": {
+      "technology": "Mechanization, steam power, and factory systems reshaping production and society."
+    }
   },
   {
     "title": "American Revolution",
     "start_year": 1775,
     "end_year": 1783,
-    "categories": ["war"]
+    "descriptions": {
+      "war": "Colonial rebellion against British rule culminating in independence for the United States."
+    }
   },
   {
     "title": "French Revolution",
     "start_year": 1789,
     "end_year": 1799,
-    "categories": ["war", "culture"]
+    "descriptions": {
+      "war": "Revolutionary conflicts and power struggles reshaping French governance.",
+      "culture": "Radical social change, Enlightenment ideals, and redefinition of citizenship."
+    }
   },
   {
     "title": "World War I",
     "start_year": 1914,
     "end_year": 1918,
-    "categories": ["war"]
+    "descriptions": {
+      "war": "Global conflict triggered by alliances and imperial rivalries, introducing mechanized warfare."
+    }
   },
   {
     "title": "World War II",
     "start_year": 1939,
     "end_year": 1945,
-    "categories": ["war"]
+    "videoURL": [
+      "https://www.youtube.com/watch?v=Q78COTwT7nE"
+    ],
+    "descriptions": {
+      "war": "Total war across multiple continents, culminating in Allied victory and global realignment."
+    }
   },
   {
     "title": "Space Age Begins",
     "start_year": 1957,
     "end_year": 1969,
-    "categories": ["technology"]
+    "videoURL": [
+      "https://www.youtube.com/watch?v=Tx4PLW3HjkU"
+    ],
+    "descriptions": {
+      "technology": "Sputnik launch and moon landing showcasing rocketry, space exploration, and scientific collaboration."
+    }
   },
   {
     "title": "Digital Revolution",
     "start_year": 1980,
     "end_year": 2000,
-    "categories": ["technology"]
+    "videoURL": [
+      "https://www.youtube.com/watch?v=FA1XAAVpS-k"
+    ],
+    "descriptions": {
+      "technology": "Transition from analog to digital systems, personal computing, and early networking."
+    }
   },
   {
     "title": "Global Internet Era",
     "start_year": 1990,
     "end_year": 2010,
-    "categories": ["technology"]
+    "descriptions": {
+      "technology": "Mass adoption of the internet, growth of online services, and global connectivity."
+    }
   },
   {
     "title": "Event A",
     "start_year": 2001,
     "end_year": 2004,
-    "categories": ["culture"]
+    "descriptions": {
+      "culture": "Representative cultural initiative highlighting creativity, collaboration, and community impact."
+    }
   },
   {
     "title": "Project Alpha",
     "start_year": 2005,
     "end_year": 2008,
-    "categories": ["technology"]
+    "descriptions": {
+      "technology": "Innovation-focused project delivering new technical capabilities and research insights."
+    }
   },
   {
     "title": "Event B",
     "start_year": 2010,
     "end_year": 2012,
-    "categories": ["culture"]
+    "descriptions": {
+      "culture": "Cultural milestone showcasing artistic expression and shifting public narratives."
+    }
   },
   {
     "title": "Development Phase",
     "start_year": 2013,
     "end_year": 2015,
-    "categories": ["technology"]
+    "descriptions": {
+      "technology": "Focused period of building infrastructure, prototyping, and deploying new systems."
+    }
   },
   {
     "title": "Launch Campaign",
     "start_year": 2016,
     "end_year": 2017,
-    "categories": ["technology","art"]
+    "descriptions": {
+      "technology": "Rollout of platform updates and supporting technical operations.",
+      "art": "Creative branding, visuals, and storytelling crafted for the public launch."
+    }
   },
   {
     "title": "Expansion Period",
     "start_year": 2018,
     "end_year": 2020,
-    "categories": ["culture","war"]
+    "descriptions": {
+      "culture": "Broader social adoption influencing norms and shared experiences.",
+      "war": "Heightened strategic competition and defensive measures across regions."
+    }
   },
   {
     "title": "AI Revolution",
     "start_year": 2020,
     "end_year": 2025,
-    "categories": ["technology", "culture","war"]
+    "videoURL": [
+      "https://www.youtube.com/watch?v=2ePf9rue1Ao"
+    ],
+    "descriptions": {
+      "technology": "Rapid advances in machine learning, automation, and intelligent systems.",
+      "culture": "Shifting work patterns, ethical debates, and new forms of human-computer collaboration.",
+      "war": "Military adoption of AI for strategy, surveillance, and autonomous systems."
+    }
   },
   {
-    "title": "Event C",
-    "start_year": 2024,
-    "end_year": 2024,
-    "categories": ["culture","war"]
+    "title": "מלחמת חרבות ברזל",
+    "start_year": 2023,
+    "end_year": 2025,
+    "videoURL": [
+      "https://www.youtube.com/watch?v=2ePf9rue1Ao"
+    ],
+    "descriptions": {
+      "culture": "השפעת המלחמה על התרבות, אמנות, טקסים, ועוד...",
+      "war": "תיאור הלחימה, מבצעים, מהלכים ומדינות מעורבות..."
+    }
   }
 ]

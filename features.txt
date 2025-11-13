@@ -1,0 +1,8 @@
+Features List:
+V - Create the timeline and add the events automatically from a json file
+V - Show/Disable events from the timeline by their categories
+V - Update the URL with the categories shown
+V - Zoom in/out buttons 
+V - Set event's color by event's categories
+V - Show video icon on the event black if the event contain a video
+V - On click on the video icon on event block it will open the video link

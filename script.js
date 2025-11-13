@@ -25,6 +25,25 @@ const defaultColor = '#6c757d'; // Gray (fallback for events without categories)
 // Track which categories are hidden (true = hidden, false = visible)
 let hiddenCategories = {};
 
+/**
+ * Derives the list of categories for an event based on its description keys.
+ * @param {Object} event - The event object from the JSON file.
+ * @returns {Array<string>} - Array of category names.
+ */
+function deriveCategoriesFromDescriptions(event) {
+    if (!event || typeof event !== 'object') {
+        return [];
+    }
+
+    const descriptions = event.descriptions;
+    if (!descriptions || typeof descriptions !== 'object') {
+        return [];
+    }
+
+    return Object.keys(descriptions)
+        .filter(key => typeof key === 'string' && key.trim().length > 0);
+}
+
 // DOM Elements
 const eventsLayer = document.getElementById('eventsLayer');
 const yearsLayer = document.getElementById('yearsLayer');
@@ -57,6 +76,7 @@ function extractCategories() {
 function mapCategoriesToColors() {
     const uniqueCategories = extractCategories();
     categoryColors = {};
+    hiddenCategories = {};
     
     uniqueCategories.forEach((category, index) => {
         // Use modulo to cycle through colors if there are more categories than colors
@@ -81,6 +101,11 @@ async function loadEvents() {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         events = await response.json();
+
+        // Derive categories from description keys
+        events.forEach(event => {
+            event.categories = deriveCategoriesFromDescriptions(event);
+        });
         
         if (events.length === 0) {
             throw new Error('No events found in JSON file');
@@ -364,7 +389,29 @@ function renderEvents() {
     visibleEvents.forEach((event, index) => {
         const eventDiv = document.createElement('div');
         eventDiv.className = 'event';
-        eventDiv.textContent = event.title;
+        const eventTitle = document.createElement('span');
+        eventTitle.className = 'event-title';
+
+        if (event.videoURL) {
+            const videoLink = document.createElement('a');
+            videoLink.className = 'video-icon';
+            videoLink.href = event.videoURL;
+            videoLink.target = '_blank';
+            videoLink.rel = 'noopener noreferrer';
+            videoLink.setAttribute('aria-label', `Watch video about ${event.title}`);
+            const videoIcon = document.createElement('img');
+            videoIcon.src = 'static/icons/video-icon.svg';
+            videoIcon.alt = 'Video';
+            videoLink.appendChild(videoIcon);
+            eventTitle.appendChild(videoLink);
+        }
+
+        const titleText = document.createElement('span');
+        titleText.className = 'event-title-text';
+        titleText.textContent = event.title;
+        eventTitle.appendChild(titleText);
+
+        eventDiv.appendChild(eventTitle);
         
         // Set color based on event categories
         const eventColor = getEventColor(event);
