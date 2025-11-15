@@ -392,10 +392,10 @@ function renderEvents() {
         const eventTitle = document.createElement('span');
         eventTitle.className = 'event-title';
 
-        if (event.videoURL) {
+        if (event.links) {
             const videoLink = document.createElement('a');
             videoLink.className = 'video-icon';
-            videoLink.href = event.videoURL;
+            videoLink.href = event.links[0];
             videoLink.target = '_blank';
             videoLink.rel = 'noopener noreferrer';
             videoLink.setAttribute('aria-label', `Watch video about ${event.title}`);

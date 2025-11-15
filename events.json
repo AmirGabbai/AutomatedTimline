@@ -3,7 +3,7 @@
     "title": "Fall of Western Roman Empire",
     "start_year": 430,
     "end_year": 476,
-    "videoURL": [
+    "links": [
       "https://www.youtube.com/watch?v=wrOo0sWDzOw"
     ],
     "descriptions": {
@@ -79,7 +79,7 @@
     "title": "Age of Discovery",
     "start_year": 1415,
     "end_year": 1600,
-    "videoURL": [
+    "links": [
       "https://www.youtube.com/watch?v=T8EW0skmZ_o"
     ],
     "descriptions": {
@@ -99,7 +99,7 @@
     "title": "Scientific Revolution",
     "start_year": 1543,
     "end_year": 1687,
-    "videoURL": [
+    "links": [
       "https://www.youtube.com/watch?v=q2L6nXLKeAI"
     ],
     "descriptions": {
@@ -110,7 +110,7 @@
     "title": "Industrial Revolution",
     "start_year": 1760,
     "end_year": 1840,
-    "videoURL": [
+    "links": [
       "https://www.youtube.com/watch?v=zhL5DCizj5c"
     ],
     "descriptions": {
@@ -146,7 +146,7 @@
     "title": "World War II",
     "start_year": 1939,
     "end_year": 1945,
-    "videoURL": [
+    "links": [
       "https://www.youtube.com/watch?v=Q78COTwT7nE"
     ],
     "descriptions": {
@@ -157,7 +157,7 @@
     "title": "Space Age Begins",
     "start_year": 1957,
     "end_year": 1969,
-    "videoURL": [
+    "links": [
       "https://www.youtube.com/watch?v=Tx4PLW3HjkU"
     ],
     "descriptions": {
@@ -168,7 +168,7 @@
     "title": "Digital Revolution",
     "start_year": 1980,
     "end_year": 2000,
-    "videoURL": [
+    "links": [
       "https://www.youtube.com/watch?v=FA1XAAVpS-k"
     ],
     "descriptions": {
@@ -237,7 +237,7 @@
     "title": "AI Revolution",
     "start_year": 2020,
     "end_year": 2025,
-    "videoURL": [
+    "links": [
       "https://www.youtube.com/watch?v=2ePf9rue1Ao"
     ],
     "descriptions": {
@@ -250,7 +250,7 @@
     "title": "מלחמת חרבות ברזל",
     "start_year": 2023,
     "end_year": 2025,
-    "videoURL": [
+    "links": [
       "https://www.youtube.com/watch?v=2ePf9rue1Ao"
     ],
     "descriptions": {
