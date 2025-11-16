@@ -398,9 +398,45 @@ body {
     flex: 1;
 }
 
+.modal-close-btn {
+    background: none;
+    border: none;
+    font-size: 32px;
+    font-weight: 300;
+    color: #666;
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transition: color 0.2s ease, transform 0.2s ease;
+    border-radius: 4px;
+}
+
+.modal-close-btn:hover {
+    color: #000;
+    transform: scale(1.1);
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.modal-close-btn:active {
+    transform: scale(0.95);
+}
+
 .modal-video-icon {
     width: 24px;
     height: 24px;
+    margin-top: 4px;
+}
+
+.modal-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: flex-end;
 }
 
 .modal-title {
@@ -408,14 +444,22 @@ body {
     font-weight: bold;
     color: #000;
     margin: 0;
-    flex: 1;
+    text-align: right;
 }
 
 .modal-header-right {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-end;
     gap: 10px;
     flex-shrink: 0;
+}
+
+.modal-years-categories {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: flex-end;
 }
 
 .modal-categories {
@@ -451,6 +495,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 15px;
+    padding-top: 10px;
 }
 
 .modal-video {
@@ -471,6 +516,9 @@ body {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    direction: rtl;
+    text-align: right;
+    padding-right: 15px;
 }
 
 .modal-description-item {
@@ -480,15 +528,17 @@ body {
 }
 
 .modal-description-category {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 600;
     text-transform: capitalize;
 }
 
 .modal-description-text {
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.6;
     color: #333;
+    direction: rtl;
+    text-align: right;
 }
 
 .modal-footer {
@@ -496,6 +546,8 @@ body {
     padding-top: 20px;
     border-top: 1px solid #ccc;
     flex-shrink: 0;
+    direction: rtl;
+    text-align: right;
 }
 
 .modal-links-title {
@@ -526,6 +578,7 @@ body {
 /* Custom scrollbar for modal body */
 .modal-body::-webkit-scrollbar {
     width: 8px;
+    
 }
 
 .modal-body::-webkit-scrollbar-track {

@@ -698,6 +698,10 @@ function init() {
     
     // Set up modal close handlers
     const modal = document.getElementById('eventModal');
+    const modalCloseBtn = document.getElementById('modalCloseBtn');
+    
+    // Close modal when clicking the close button
+    modalCloseBtn.addEventListener('click', closeEventModal);
     
     // Close modal when clicking outside the modal content
     modal.addEventListener('click', (e) => {

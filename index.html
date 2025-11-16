@@ -33,12 +33,17 @@
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-title-section">
-                    <img class="modal-video-icon" id="modalVideoIcon-black" src="/static/icons/video-icon-black.svg" alt="Video-Icon" style="display: none;">
-                    <h2 class="modal-title" id="modalTitle"></h2>
+                    <button class="modal-close-btn" id="modalCloseBtn" aria-label="Close modal">&times;</button>
                 </div>
                 <div class="modal-header-right">
-                    <div class="modal-categories" id="modalCategories"></div>
-                    <div class="modal-years" id="modalYears"></div>
+                    <div class="modal-years-categories">
+                        <div class="modal-years" id="modalYears"></div>
+                        <div class="modal-categories" id="modalCategories"></div>
+                    </div>
+                    <div class="modal-title-wrapper">
+                        <img class="modal-video-icon" id="modalVideoIcon-black" src="/static/icons/video-icon-black.svg" alt="Video-Icon" style="display: none;">
+                        <h2 class="modal-title" id="modalTitle"></h2>
+                    </div>
                 </div>
             </div>
             <div class="modal-body">
