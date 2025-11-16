@@ -400,7 +400,7 @@ function renderEvents() {
             videoLink.rel = 'noopener noreferrer';
             videoLink.setAttribute('aria-label', `Watch video about ${event.title}`);
             const videoIcon = document.createElement('img');
-            videoIcon.src = 'static/icons/video-icon.svg';
+            videoIcon.src = '/static/icons/video-icon-white.svg';
             videoIcon.alt = 'Video';
             videoLink.appendChild(videoIcon);
             eventTitle.appendChild(videoLink);
@@ -433,6 +433,15 @@ function renderEvents() {
         // Calculate top position from bottom: layer height - event height - vertical offset
         const topPosition = eventsLayerHeight - eventHeight - verticalOffset;
         eventDiv.style.top = `${topPosition}px`;
+        
+        // Add click handler to show modal
+        eventDiv.addEventListener('click', (e) => {
+            // Prevent event from bubbling if clicking on video icon
+            if (e.target.closest('.video-icon')) {
+                return;
+            }
+            showEventModal(event);
+        });
         
         eventsLayer.appendChild(eventDiv);
     });
@@ -520,6 +529,159 @@ function handlePopState() {
 }
 
 /**
+ * Extracts YouTube video ID from a YouTube URL
+ * Supports various YouTube URL formats
+ * @param {string} url - YouTube URL
+ * @returns {string|null} - YouTube video ID or null if not a valid YouTube URL
+ */
+function extractYouTubeId(url) {
+    if (!url || typeof url !== 'string') return null;
+    
+    // Check if it's a YouTube URL
+    if (!url.includes('youtube.com') && !url.includes('youtu.be')) return null;
+    
+    // Pattern for youtube.com/watch?v=VIDEO_ID
+    let match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
+    if (match && match[1]) {
+        return match[1];
+    }
+    
+    return null;
+}
+
+/**
+ * Checks if a URL is a YouTube link
+ * @param {string} url - URL to check
+ * @returns {boolean} - True if it's a YouTube URL
+ */
+function isYouTubeLink(url) {
+    return url && (url.includes('youtube.com') || url.includes('youtu.be'));
+}
+
+/**
+ * Shows the event modal and populates it with event data
+ * @param {Object} event - The event object to display
+ */
+function showEventModal(event) {
+    const modal = document.getElementById('eventModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalVideoIcon = document.getElementById('modalVideoIcon-black');
+    const modalCategories = document.getElementById('modalCategories');
+    const modalYears = document.getElementById('modalYears');
+    const modalVideos = document.getElementById('modalVideos');
+    const modalDescriptions = document.getElementById('modalDescriptions');
+    const modalLinks = document.getElementById('modalLinks');
+    
+    // Set title
+    modalTitle.textContent = event.title;
+    
+    // Show video icon if there are YouTube links
+    const youtubeLinks = event.links ? event.links.filter(link => isYouTubeLink(link)) : [];
+    if (youtubeLinks.length > 0) {
+        modalVideoIcon.style.display = 'inline';
+    } else {
+        modalVideoIcon.style.display = 'none';
+    }
+    
+    // Set years
+    if (event.start_year === event.end_year) {
+        modalYears.textContent = event.start_year.toString();
+    } else {
+        modalYears.textContent = `${event.start_year}-${event.end_year}`;
+    }
+    
+    // Set category circles
+    modalCategories.innerHTML = '';
+    if (event.categories && event.categories.length > 0) {
+        event.categories.forEach(category => {
+            const circle = document.createElement('span');
+            circle.className = 'modal-category-circle';
+            const categoryColor = categoryColors[category] || defaultColor;
+            circle.style.backgroundColor = categoryColor;
+            modalCategories.appendChild(circle);
+        });
+    }
+    
+    // Set videos (YouTube embeds)
+    modalVideos.innerHTML = '';
+    if (youtubeLinks.length > 0) {
+        youtubeLinks.forEach(link => {
+            const videoId = extractYouTubeId(link);
+            if (videoId) {
+                const videoContainer = document.createElement('div');
+                videoContainer.className = 'modal-video';
+                const iframe = document.createElement('iframe');
+                iframe.src = `https://www.youtube.com/embed/${videoId}`;
+                iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+                iframe.allowFullscreen = true;
+                videoContainer.appendChild(iframe);
+                modalVideos.appendChild(videoContainer);
+            }
+        });
+        modalVideos.style.display = 'flex';
+    } else {
+        modalVideos.style.display = 'none';
+    }
+    
+    // Set descriptions
+    modalDescriptions.innerHTML = '';
+    if (event.descriptions && typeof event.descriptions === 'object') {
+        Object.entries(event.descriptions).forEach(([category, description]) => {
+            const descriptionItem = document.createElement('div');
+            descriptionItem.className = 'modal-description-item';
+            
+            const categoryName = document.createElement('div');
+            categoryName.className = 'modal-description-category';
+            const categoryColor = categoryColors[category] || defaultColor;
+            categoryName.style.color = categoryColor;
+            categoryName.textContent = category;
+            
+            const descriptionText = document.createElement('div');
+            descriptionText.className = 'modal-description-text';
+            descriptionText.textContent = description;
+            
+            descriptionItem.appendChild(categoryName);
+            descriptionItem.appendChild(descriptionText);
+            modalDescriptions.appendChild(descriptionItem);
+        });
+    }
+    
+    // Set links (excluding YouTube links as they're shown as videos)
+    const modalFooter = document.querySelector('.modal-footer');
+    modalLinks.innerHTML = '';
+    const nonYouTubeLinks = event.links ? event.links.filter(link => !isYouTubeLink(link)) : [];
+    if (nonYouTubeLinks.length > 0) {
+        nonYouTubeLinks.forEach((link, index) => {
+            const linkElement = document.createElement('a');
+            linkElement.className = 'modal-link';
+            linkElement.href = link;
+            linkElement.target = '_blank';
+            linkElement.rel = 'noopener noreferrer';
+            linkElement.textContent = `${index + 1}. ${link}`;
+            modalLinks.appendChild(linkElement);
+        });
+        modalFooter.style.display = 'block';
+    } else {
+        modalFooter.style.display = 'none';
+    }
+    
+    // Show modal
+    modal.classList.add('active');
+    
+    // Prevent body scroll when modal is open
+    document.body.style.overflow = 'hidden';
+}
+
+/**
+ * Closes the event modal
+ */
+function closeEventModal() {
+    const modal = document.getElementById('eventModal');
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+/**
  * Initialize the timeline when the page loads
  */
 function init() {
@@ -533,6 +695,23 @@ function init() {
     
     // Listen for browser back/forward navigation
     window.addEventListener('popstate', handlePopState);
+    
+    // Set up modal close handlers
+    const modal = document.getElementById('eventModal');
+    
+    // Close modal when clicking outside the modal content
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeEventModal();
+        }
+    });
+    
+    // Close modal when pressing ESC key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeEventModal();
+        }
+    });
     
     // Load events and render timeline
     loadEvents();
