@@ -558,11 +558,19 @@ function isYouTubeLink(url) {
     return url && (url.includes('youtube.com') || url.includes('youtu.be'));
 }
 
+// Track current event index for navigation
+let currentEventIndex = -1;
+
 /**
  * Shows the event modal and populates it with event data
  * @param {Object} event - The event object to display
  */
 function showEventModal(event) {
+    // Find the current event index in the events array
+    currentEventIndex = events.findIndex(e => e === event);
+    
+    // Update navigation buttons
+    updateNavigationButtons();
     const modal = document.getElementById('eventModal');
     const modalTitle = document.getElementById('modalTitle');
     const modalVideoIcon = document.getElementById('modalVideoIcon-black');
@@ -647,6 +655,7 @@ function showEventModal(event) {
     }
     
     // Set links (excluding YouTube links as they're shown as videos)
+    const modalLinksSection = document.querySelector('.modal-links-section');
     const modalFooter = document.querySelector('.modal-footer');
     modalLinks.innerHTML = '';
     const nonYouTubeLinks = event.links ? event.links.filter(link => !isYouTubeLink(link)) : [];
@@ -660,9 +669,11 @@ function showEventModal(event) {
             linkElement.textContent = `${index + 1}. ${link}`;
             modalLinks.appendChild(linkElement);
         });
-        modalFooter.style.display = 'block';
+        modalLinksSection.style.display = 'block';
+        modalFooter.classList.remove('no-links');
     } else {
-        modalFooter.style.display = 'none';
+        modalLinksSection.style.display = 'none';
+        modalFooter.classList.add('no-links');
     }
     
     // Show modal
@@ -670,6 +681,44 @@ function showEventModal(event) {
     
     // Prevent body scroll when modal is open
     document.body.style.overflow = 'hidden';
+}
+
+/**
+ * Updates the state of next/previous navigation buttons
+ */
+function updateNavigationButtons() {
+    const prevBtn = document.getElementById('prevEventBtn');
+    const nextBtn = document.getElementById('nextEventBtn');
+    
+    // Disable previous button if at first event
+    if (prevBtn) {
+        prevBtn.disabled = currentEventIndex <= 0;
+    }
+    
+    // Disable next button if at last event
+    if (nextBtn) {
+        nextBtn.disabled = currentEventIndex >= events.length - 1;
+    }
+}
+
+/**
+ * Navigates to the previous event in the modal
+ */
+function showPreviousEvent() {
+    if (currentEventIndex > 0) {
+        const prevEvent = events[currentEventIndex - 1];
+        showEventModal(prevEvent);
+    }
+}
+
+/**
+ * Navigates to the next event in the modal
+ */
+function showNextEvent() {
+    if (currentEventIndex < events.length - 1) {
+        const nextEvent = events[currentEventIndex + 1];
+        showEventModal(nextEvent);
+    }
 }
 
 /**
@@ -702,6 +751,18 @@ function init() {
     
     // Close modal when clicking the close button
     modalCloseBtn.addEventListener('click', closeEventModal);
+    
+    // Set up navigation button handlers
+    const prevEventBtn = document.getElementById('prevEventBtn');
+    const nextEventBtn = document.getElementById('nextEventBtn');
+    
+    if (prevEventBtn) {
+        prevEventBtn.addEventListener('click', showPreviousEvent);
+    }
+    
+    if (nextEventBtn) {
+        nextEventBtn.addEventListener('click', showNextEvent);
+    }
     
     // Close modal when clicking outside the modal content
     modal.addEventListener('click', (e) => {

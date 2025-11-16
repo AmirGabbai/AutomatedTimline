@@ -495,7 +495,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    padding-top: 10px;
+    padding-top: 30px;
 }
 
 .modal-video {
@@ -548,6 +548,63 @@ body {
     flex-shrink: 0;
     direction: rtl;
     text-align: right;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.modal-footer.no-links {
+    justify-content: flex-end;
+}
+
+.modal-navigation {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+    flex-grow: 0;
+    flex-basis: auto;
+    align-items: flex-start;
+
+}
+
+.modal-nav-btn {
+    padding: 10px 20px;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    direction: rtl;
+}
+
+.modal-nav-btn:hover:not(:disabled) {
+    background-color: #357abd;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.modal-nav-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.modal-nav-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    transform: none;
+    opacity: 0.6;
+}
+
+.modal-links-section {
+    flex: 1;
+    min-width: 0;
+    max-width: calc(100% - 300px);
 }
 
 .modal-links-title {
