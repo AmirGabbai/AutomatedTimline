@@ -25,6 +25,12 @@ const defaultColor = '#6c757d'; // Gray (fallback for events without categories)
 // Track which categories are hidden (true = hidden, false = visible)
 let hiddenCategories = {};
 
+// Track if this is the initial render (to avoid fade-in on first load)
+let isInitialRender = true;
+
+// Track the number of layers that contain events
+let activeLayersCount = 0;
+
 /**
  * Derives the list of categories for an event based on its description keys.
  * @param {Object} event - The event object from the JSON file.
@@ -47,6 +53,7 @@ function deriveCategoriesFromDescriptions(event) {
 // DOM Elements
 const eventsLayer = document.getElementById('eventsLayer');
 const yearsLayer = document.getElementById('yearsLayer');
+const reflectionLayer = document.getElementById('reflectionLayer');
 const zoomInBtn = document.getElementById('zoomIn');
 const zoomOutBtn = document.getElementById('zoomOut');
 const categoriesMenu = document.querySelector('.categories-menu');
@@ -126,6 +133,11 @@ async function loadEvents() {
         
         // Initialize the timeline (scroll to end on initial load)
         renderTimeline(true);
+        
+        // Mark initial render as complete after a short delay
+        setTimeout(() => {
+            isInitialRender = false;
+        }, 100);
     } catch (error) {
         console.error('Error loading events:', error);
         
@@ -173,6 +185,7 @@ function renderTimeline(scrollToEnd = false, centerYear = null) {
     container.style.width = '100%';
     eventsLayer.style.width = `${timelineWidth}px`;
     yearsLayer.style.width = `${timelineWidth}px`;
+    reflectionLayer.style.width = `${timelineWidth}px`;
 
     const timelineLine = scrollable.querySelector('.timeline-line');
     if (timelineLine) {
@@ -379,45 +392,117 @@ function isEventVisible(event) {
  * Left position = (start_year - min_year) * yearWidth
  */
 function renderEvents() {
-    eventsLayer.innerHTML = '';
-    
     if (minYear === null || maxYear === null || events.length === 0) return;
     
-    // Filter events based on visibility
-    const visibleEvents = events.filter(event => isEventVisible(event));
+    // Get existing event elements and create a map by event index
+    const existingEventElements = Array.from(eventsLayer.querySelectorAll('.event'));
+    const existingEventMap = new Map();
+    existingEventElements.forEach(el => {
+        const eventIndex = parseInt(el.getAttribute('data-event-index'), 10);
+        if (!isNaN(eventIndex)) {
+            existingEventMap.set(eventIndex, el);
+        }
+    });
     
+    // Create a map of visible events by their index in the original events array
+    const visibleEventMap = new Map();
+    events.forEach((event, index) => {
+        if (isEventVisible(event)) {
+            visibleEventMap.set(index, event);
+        }
+    });
+    
+    // Fade out and remove events that should be hidden
+    existingEventMap.forEach((eventDiv, eventIndex) => {
+        if (!visibleEventMap.has(eventIndex)) {
+            // Event should be hidden - fade it out
+            eventDiv.classList.add('fade-out');
+            eventDiv.addEventListener('transitionend', function handler(e) {
+                if (e.propertyName === 'opacity' && eventDiv.classList.contains('fade-out')) {
+                    eventDiv.removeEventListener('transitionend', handler);
+                    eventDiv.remove();
+                }
+            }, { once: true });
+        }
+    });
+    
+    // Calculate lane occupancy for visible events
     const layerCount = 7;
     const layerSpacing = 80;
     const eventsLayerHeight = 530; // Match the height from CSS
     const eventHeight = 40; // Match the event height from CSS
     const laneOccupancy = Array.from({ length: layerCount }, () => []);
 
-    visibleEvents.forEach((event) => {
-        const eventDiv = document.createElement('div');
-        eventDiv.className = 'event';
-        const eventTitle = document.createElement('span');
-        eventTitle.className = 'event-title';
+    visibleEventMap.forEach((event, eventIndex) => {
+        // Check if event element already exists
+        let eventDiv = existingEventMap.get(eventIndex);
+        const isNewEvent = !eventDiv;
+        
+        if (isNewEvent) {
+            // Create new event element
+            eventDiv = document.createElement('div');
+            eventDiv.className = 'event' + (isInitialRender ? '' : ' fade-in');
+            const eventTitle = document.createElement('span');
+            eventTitle.className = 'event-title';
 
-        if (event.links) {
-            const videoLink = document.createElement('a');
-            videoLink.className = 'video-icon';
-            videoLink.href = event.links[0];
-            videoLink.target = '_blank';
-            videoLink.rel = 'noopener noreferrer';
-            videoLink.setAttribute('aria-label', `Watch video about ${event.title}`);
-            const videoIcon = document.createElement('img');
-            videoIcon.src = '/static/icons/video-icon-white.svg';
-            videoIcon.alt = 'Video';
-            videoLink.appendChild(videoIcon);
-            eventTitle.appendChild(videoLink);
+            if (event.links) {
+                const videoLink = document.createElement('a');
+                videoLink.className = 'video-icon';
+                videoLink.href = event.links[0];
+                videoLink.target = '_blank';
+                videoLink.rel = 'noopener noreferrer';
+                videoLink.setAttribute('aria-label', `Watch video about ${event.title}`);
+                const videoIcon = document.createElement('img');
+                videoIcon.src = '/static/icons/video-icon-white.svg';
+                videoIcon.alt = 'Video';
+                videoLink.appendChild(videoIcon);
+                eventTitle.appendChild(videoLink);
+            }
+
+            const titleText = document.createElement('span');
+            titleText.className = 'event-title-text';
+            titleText.textContent = event.title;
+            eventTitle.appendChild(titleText);
+
+            eventDiv.appendChild(eventTitle);
+            
+            // Store event index for tracking
+            eventDiv.setAttribute('data-event-index', eventIndex);
+            
+            // Add hover handlers for reflection effect
+            const eventColor = getEventColor(event);
+            const eventDuration = event.end_year - event.start_year + 1;
+            const eventWidth = eventDuration * yearWidth;
+            const leftPosition = (event.start_year - minYear) * yearWidth;
+            
+            eventDiv.addEventListener('mouseenter', () => {
+                // Use the same width as the event (with -10px adjustment)
+                const reflectionWidth = eventWidth - 10;
+                showReflectionBlock(event.start_year, event.end_year, eventColor, leftPosition, reflectionWidth);
+            });
+            
+            eventDiv.addEventListener('mouseleave', () => {
+                hideReflectionBlock();
+            });
+            
+            // Add click handler to show modal
+            eventDiv.addEventListener('click', (e) => {
+                // Prevent event from bubbling if clicking on video icon
+                if (e.target.closest('.video-icon')) {
+                    return;
+                }
+                showEventModal(event);
+            });
+            
+            eventsLayer.appendChild(eventDiv);
+        } else {
+            // Remove fade-out class if it exists (in case event was being hidden but is now visible again)
+            if (eventDiv.classList.contains('fade-out')) {
+                eventDiv.classList.remove('fade-out');
+                // Ensure it's fully visible
+                eventDiv.style.opacity = '1';
+            }
         }
-
-        const titleText = document.createElement('span');
-        titleText.className = 'event-title-text';
-        titleText.textContent = event.title;
-        eventTitle.appendChild(titleText);
-
-        eventDiv.appendChild(eventTitle);
         
         // Set color based on event categories
         const eventColor = getEventColor(event);
@@ -453,22 +538,69 @@ function renderEvents() {
             end: event.end_year
         });
 
-        const verticalOffset = laneIndex * layerSpacing;
-        // Calculate top position from bottom: layer height - event height - vertical offset
-        const topPosition = eventsLayerHeight - eventHeight - verticalOffset;
-        eventDiv.style.top = `${topPosition}px`;
+        // Store lane index on the element for later position adjustment
+        eventDiv.setAttribute('data-lane-index', laneIndex);
         
-        // Add click handler to show modal
-        eventDiv.addEventListener('click', (e) => {
-            // Prevent event from bubbling if clicking on video icon
-            if (e.target.closest('.video-icon')) {
-                return;
-            }
-            showEventModal(event);
-        });
+        // Store event data on the div for hover effects
+        eventDiv.setAttribute('data-start-year', event.start_year);
+        eventDiv.setAttribute('data-end-year', event.end_year);
+        eventDiv.setAttribute('data-background', eventColor);
         
-        eventsLayer.appendChild(eventDiv);
+        // Trigger fade-in animation for new events (but not on initial render)
+        if (isNewEvent && !isInitialRender) {
+            // Use requestAnimationFrame to ensure the element is in the DOM before animating
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    eventDiv.classList.remove('fade-in');
+                });
+            });
+        }
     });
+    
+    // Calculate the number of layers that contain events
+    activeLayersCount = laneOccupancy.filter(lane => lane.length > 0).length;
+    
+    // Calculate the offset to push timeline up by unused layers
+    const unusedLayers = layerCount - activeLayersCount;
+    const maxPushUpOffset = 160; // Maximum push up in pixels
+    const pushUpOffset = Math.min(unusedLayers * layerSpacing, maxPushUpOffset);
+    
+    // Log the number of active layers
+    console.log(`Active layers count: ${activeLayersCount} out of ${layerCount} maximum layers`);
+    console.log(`Pushing timeline up by ${pushUpOffset}px (${unusedLayers} unused layers)`);
+    
+    // Adjust all event positions to push timeline up by unused layers
+    const allEventElements = eventsLayer.querySelectorAll('.event:not(.fade-out)');
+    allEventElements.forEach(eventDiv => {
+        const laneIndex = parseInt(eventDiv.getAttribute('data-lane-index'), 10);
+        if (!isNaN(laneIndex)) {
+            const verticalOffset = laneIndex * layerSpacing;
+            // Calculate top position from bottom: layer height - event height - vertical offset - push up offset
+            const topPosition = eventsLayerHeight - eventHeight - verticalOffset - pushUpOffset;
+            eventDiv.style.top = `${topPosition}px`;
+        }
+    });
+    
+    // Adjust timeline line, reflection layer, and years layer positions
+    const scrollable = document.querySelector('.timeline-scrollable');
+    const timelineLine = scrollable.querySelector('.timeline-line');
+    
+    // Base positions from CSS (timeline-line: 550px, reflection-layer: 556px, years-layer: 560px)
+    const baseTimelineLineTop = 550;
+    const baseReflectionLayerTop = 556;
+    const baseYearsLayerTop = 560;
+    
+    if (timelineLine) {
+        timelineLine.style.top = `${baseTimelineLineTop - pushUpOffset}px`;
+    }
+    
+    if (reflectionLayer) {
+        reflectionLayer.style.top = `${baseReflectionLayerTop - pushUpOffset}px`;
+    }
+    
+    if (yearsLayer) {
+        yearsLayer.style.top = `${baseYearsLayerTop - pushUpOffset}px`;
+    }
 }
 
 /**
@@ -752,6 +884,172 @@ function closeEventModal() {
     const modal = document.getElementById('eventModal');
     modal.classList.remove('active');
     document.body.style.overflow = '';
+}
+
+/**
+ * Extracts colors from a gradient or solid color string
+ * @param {string} colorString - CSS color string (gradient or solid color)
+ * @returns {Array<string>} - Array of color hex codes
+ */
+function extractColorsFromBackground(colorString) {
+    if (!colorString) return [];
+    
+    // If it's a gradient
+    if (colorString.includes('linear-gradient')) {
+        // Extract colors from gradient stops
+        const colorMatches = colorString.match(/#[0-9a-fA-F]{6}/g);
+        return colorMatches || [];
+    }
+    
+    // If it's a solid color (hex)
+    if (colorString.startsWith('#')) {
+        return [colorString];
+    }
+    
+    // If it's an rgb/rgba color, try to convert (simplified)
+    // For now, return empty array for non-hex colors
+    return [];
+}
+
+/**
+ * Converts a hex color to rgba format
+ * @param {string} hex - Hex color code
+ * @param {number} opacity - Opacity value (0-1)
+ * @returns {string} - rgba color string
+ */
+function hexToRgba(hex, opacity = 0.5) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+}
+
+/**
+ * Creates a glow effect color from an array of colors
+ * Uses the first color for single colors, or creates a gradient-like glow for multiple colors
+ * @param {Array<string>} colors - Array of color hex codes
+ * @returns {string|Array<string>} - Glow color(s) in rgba format
+ */
+function createGlowColor(colors) {
+    if (colors.length === 0) {
+        return 'rgba(74, 144, 226, 0.5)'; // Default blue glow
+    }
+    
+    if (colors.length === 1) {
+        return hexToRgba(colors[0], 0.5);
+    }
+    
+    // For multiple colors, return an array to create a multi-color glow
+    return colors.map(color => hexToRgba(color, 0.5));
+}
+
+/**
+ * Converts a gradient or solid color to a version with reduced opacity
+ * @param {string} background - Background color/gradient string
+ * @returns {string} - Background with reduced opacity
+ */
+function applyOpacityToBackground(background) {
+    if (!background) return '';
+    
+    // If it's a gradient, we need to add opacity to each color
+    if (background.includes('linear-gradient')) {
+        // Extract the gradient definition
+        const gradientMatch = background.match(/linear-gradient\(([^)]+)\)/);
+        if (!gradientMatch) return background;
+        
+        const gradientContent = gradientMatch[1];
+        // Split by comma, but be careful with the direction parameter
+        // The format is: "135deg, #color1 0%, #color2 100%"
+        const parts = gradientContent.split(',').map(p => p.trim());
+        
+        // First part might be the direction (e.g., "135deg")
+        let direction = '';
+        let colorStops = [];
+        
+        if (parts[0].match(/^\d+deg$/)) {
+            direction = parts[0];
+            colorStops = parts.slice(1);
+        } else {
+            colorStops = parts;
+        }
+        
+        // Convert each color stop to include opacity
+        const newStops = colorStops.map(stop => {
+            // Check if it's a color with percentage (e.g., "#5e72c7 0%")
+            const stopParts = stop.split(/\s+/);
+            const color = stopParts[0];
+            const percentage = stopParts.slice(1).join(' '); // Handle multiple parts (e.g., "0%" or "50% 100%")
+            
+            if (color.startsWith('#')) {
+                // Convert hex to rgba with opacity
+                const r = parseInt(color.slice(1, 3), 16);
+                const g = parseInt(color.slice(3, 5), 16);
+                const b = parseInt(color.slice(5, 7), 16);
+                return percentage ? `rgba(${r}, ${g}, ${b}, 0.4) ${percentage}` : `rgba(${r}, ${g}, ${b}, 0.4)`;
+            }
+            return stop;
+        });
+        
+        // Reconstruct the gradient
+        const gradientParts = direction ? [direction, ...newStops] : newStops;
+        return `linear-gradient(${gradientParts.join(', ')})`;
+    }
+    
+    // If it's a solid hex color, convert to rgba with opacity
+    if (background.startsWith('#')) {
+        const r = parseInt(background.slice(1, 3), 16);
+        const g = parseInt(background.slice(3, 5), 16);
+        const b = parseInt(background.slice(5, 7), 16);
+        return `rgba(${r}, ${g}, ${b}, 0.4)`;
+    }
+    
+    // If it's already rgba, adjust opacity
+    if (background.includes('rgba')) {
+        return background.replace(/rgba\(([^)]+)\)/, (match, content) => {
+            const parts = content.split(',').map(p => p.trim());
+            if (parts.length === 4) {
+                parts[3] = '0.4';
+                return `rgba(${parts.join(', ')})`;
+            }
+            return match;
+        });
+    }
+    
+    return background;
+}
+
+/**
+ * Shows a reflection block under the timeline line matching the hovered event
+ * @param {number} startYear - Start year of the event
+ * @param {number} endYear - End year of the event
+ * @param {string} eventBackground - Background color/gradient of the event
+ * @param {number} leftPosition - Left position of the event in pixels
+ * @param {number} eventWidth - Width of the event in pixels
+ */
+function showReflectionBlock(startYear, endYear, eventBackground, leftPosition, eventWidth) {
+    // Clear any existing reflection block
+    reflectionLayer.innerHTML = '';
+    
+    // Create the reflection block
+    const reflectionBlock = document.createElement('div');
+    reflectionBlock.className = 'reflection-block';
+    
+    // Apply the same background with reduced opacity
+    const backgroundWithOpacity = applyOpacityToBackground(eventBackground);
+    reflectionBlock.style.background = backgroundWithOpacity;
+    
+    // Match the event's position and width
+    reflectionBlock.style.left = `${leftPosition}px`;
+    reflectionBlock.style.width = `${eventWidth}px`;
+    
+    reflectionLayer.appendChild(reflectionBlock);
+}
+
+/**
+ * Hides the reflection block
+ */
+function hideReflectionBlock() {
+    reflectionLayer.innerHTML = '';
 }
 
 /**
