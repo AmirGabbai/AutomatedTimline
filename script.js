@@ -427,9 +427,9 @@ function renderEvents() {
         eventDiv.style.left = `${leftPosition}px`;
         
         // Stagger events vertically to avoid overlap, starting from the bottom
-        const eventsLayerHeight = 280; // Match the height from CSS
+        const eventsLayerHeight = 480; // Match the height from CSS
         const eventHeight = 40; // Match the event height from CSS
-        const verticalOffset = (index % 3) * 70; // Cycle through 3 vertical positions
+        const verticalOffset = (index % 7) * 70; // Cycle through 3 vertical positions
         // Calculate top position from bottom: layer height - event height - vertical offset
         const topPosition = eventsLayerHeight - eventHeight - verticalOffset;
         eventDiv.style.top = `${topPosition}px`;
