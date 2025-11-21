@@ -386,7 +386,13 @@ function renderEvents() {
     // Filter events based on visibility
     const visibleEvents = events.filter(event => isEventVisible(event));
     
-    visibleEvents.forEach((event, index) => {
+    const layerCount = 7;
+    const layerSpacing = 80;
+    const eventsLayerHeight = 530; // Match the height from CSS
+    const eventHeight = 40; // Match the event height from CSS
+    const laneOccupancy = Array.from({ length: layerCount }, () => []);
+
+    visibleEvents.forEach((event) => {
         const eventDiv = document.createElement('div');
         eventDiv.className = 'event';
         const eventTitle = document.createElement('span');
@@ -420,16 +426,34 @@ function renderEvents() {
         // Calculate width: (end_year - start_year + 1) * yearWidth
         const eventDuration = event.end_year - event.start_year + 1;
         const eventWidth = eventDuration * yearWidth;
-        eventDiv.style.width = `${eventWidth}px`;
+        eventDiv.style.width = `${eventWidth-10}px`;
         
         // Calculate left position: (start_year - min_year) * yearWidth
         const leftPosition = (event.start_year - minYear) * yearWidth;
         eventDiv.style.left = `${leftPosition}px`;
         
-        // Stagger events vertically to avoid overlap, starting from the bottom
-        const eventsLayerHeight = 530; // Match the height from CSS
-        const eventHeight = 40; // Match the event height from CSS
-        const verticalOffset = (index % 7) * 70; // Cycle through 3 vertical positions
+        // Determine vertical lane, defaulting to the bottom lane and moving up only if needed
+        let laneIndex = 0;
+        for (; laneIndex < layerCount; laneIndex++) {
+            const laneEvents = laneOccupancy[laneIndex];
+            const hasOverlap = laneEvents.some(range => (
+                event.start_year <= range.end && event.end_year >= range.start
+            ));
+            if (!hasOverlap) {
+                break;
+            }
+        }
+
+        if (laneIndex === layerCount) {
+            laneIndex = layerCount - 1;
+        }
+
+        laneOccupancy[laneIndex].push({
+            start: event.start_year,
+            end: event.end_year
+        });
+
+        const verticalOffset = laneIndex * layerSpacing;
         // Calculate top position from bottom: layer height - event height - vertical offset
         const topPosition = eventsLayerHeight - eventHeight - verticalOffset;
         eventDiv.style.top = `${topPosition}px`;

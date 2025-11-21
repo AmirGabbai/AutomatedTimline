@@ -225,6 +225,7 @@ body {
 .event {
     position: absolute;
     height: 45px;
+    margin-left: 5px;
     /* background color is set dynamically via JavaScript based on categories */
     border-radius: 8px;
     display: flex;
