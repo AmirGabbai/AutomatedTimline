@@ -33,6 +33,30 @@ body {
     pointer-events: auto;
 }
 
+/* Instructions Container */
+.instructions-container {
+    position: absolute;
+    bottom: 20px;
+    left: 150px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    transition: opacity 0.5s ease;
+}
+/* Use a handwriting-type font for .instructions-container text */
+.instructions-container p {
+    font-family: 'Caveat', 'Architects Daughter', 'Shadows Into Light', 'Comic Sans MS', 'Indie Flower', cursive, sans-serif;
+    font-size: 14px;
+    color: #2d2620;         /* Soft whiteboard marker/dark color */
+    padding: 16px 26px;
+    letter-spacing: 0.01em;
+    line-height: 1.4;
+}
+
+/* Optionally, make sure the font files are loaded in your HTML, eg:
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Architects+Daughter&family=Shadows+Into+Light&display=swap" rel="stylesheet">
+*/
+
 .zoom-btn {
     width: 55px;
     height: 55px;
@@ -53,7 +77,6 @@ body {
 
 .zoom-btn:hover {
     background-color: #357abd;
-    transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
@@ -159,23 +182,23 @@ body {
 }
 
 .timeline-scrollable::-webkit-scrollbar-thumb {
-    background: linear-gradient(90deg, #4a90e2, #357abd);
+    background: linear-gradient(90deg, #bbbbbb, #888888);
     border-radius: 12px;
     border: 3px solid #e0e0e0;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(74, 144, 226, 0.4);
+    box-shadow: 0 2px 8px rgba(180, 180, 180, 0.4);
     min-width: 50px;
 }
 
 .timeline-scrollable::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(90deg, #357abd, #2a5f8f);
-    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.6);
+    background: linear-gradient(90deg, #888888, #666666);
+    box-shadow: 0 4px 12px rgba(140, 140, 140, 0.6);
     border: 3px solid #d0d0d0;
 }
 
 .timeline-scrollable::-webkit-scrollbar-thumb:active {
-    background: linear-gradient(90deg, #2a5f8f, #1e4a6b);
-    box-shadow: 0 2px 6px rgba(74, 144, 226, 0.5);
+    background: linear-gradient(90deg, #666666, #444444);
+    box-shadow: 0 2px 6px rgba(120, 120, 120, 0.5);
 }
 
 /* Scrollbar Buttons (left/right arrows) */
@@ -239,7 +262,7 @@ body {
     padding: 5px 12px;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
     cursor: pointer;
-    transition: all 0.3s ease, opacity 0.4s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.4s ease;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

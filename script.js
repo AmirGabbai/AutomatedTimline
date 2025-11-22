@@ -28,8 +28,14 @@ let hiddenCategories = {};
 // Track if this is the initial render (to avoid fade-in on first load)
 let isInitialRender = true;
 
+// Track if we're currently zooming (to disable animations during zoom)
+let isZooming = false;
+
 // Track the number of layers that contain events
 let activeLayersCount = 0;
+
+// Track if instructions have been hidden (to only hide once)
+let instructionsHidden = false;
 
 /**
  * Derives the list of categories for an event based on its description keys.
@@ -412,17 +418,22 @@ function renderEvents() {
         }
     });
     
-    // Fade out and remove events that should be hidden
+    // Fade out and remove events that should be hidden (only if not zooming)
     existingEventMap.forEach((eventDiv, eventIndex) => {
         if (!visibleEventMap.has(eventIndex)) {
-            // Event should be hidden - fade it out
-            eventDiv.classList.add('fade-out');
-            eventDiv.addEventListener('transitionend', function handler(e) {
-                if (e.propertyName === 'opacity' && eventDiv.classList.contains('fade-out')) {
-                    eventDiv.removeEventListener('transitionend', handler);
-                    eventDiv.remove();
-                }
-            }, { once: true });
+            if (isZooming) {
+                // During zoom, remove immediately without animation
+                eventDiv.remove();
+            } else {
+                // During category toggle, fade out smoothly
+                eventDiv.classList.add('fade-out');
+                eventDiv.addEventListener('transitionend', function handler(e) {
+                    if (e.propertyName === 'opacity' && eventDiv.classList.contains('fade-out')) {
+                        eventDiv.removeEventListener('transitionend', handler);
+                        eventDiv.remove();
+                    }
+                }, { once: true });
+            }
         }
     });
     
@@ -440,8 +451,10 @@ function renderEvents() {
         
         if (isNewEvent) {
             // Create new event element
+            // Only add fade-in class if not initial render and not zooming
+            const shouldFadeIn = !isInitialRender && !isZooming;
             eventDiv = document.createElement('div');
-            eventDiv.className = 'event' + (isInitialRender ? '' : ' fade-in');
+            eventDiv.className = 'event' + (shouldFadeIn ? ' fade-in' : '');
             const eventTitle = document.createElement('span');
             eventTitle.className = 'event-title';
 
@@ -504,6 +517,13 @@ function renderEvents() {
             }
         }
         
+        // Disable transitions during zoom for better performance
+        if (isZooming) {
+            eventDiv.style.transition = 'none';
+        } else {
+            eventDiv.style.transition = ''; // Reset to CSS default
+        }
+        
         // Set color based on event categories
         const eventColor = getEventColor(event);
         eventDiv.style.background = eventColor;
@@ -546,14 +566,18 @@ function renderEvents() {
         eventDiv.setAttribute('data-end-year', event.end_year);
         eventDiv.setAttribute('data-background', eventColor);
         
-        // Trigger fade-in animation for new events (but not on initial render)
-        if (isNewEvent && !isInitialRender) {
+        // Trigger fade-in animation for new events (but not on initial render or during zoom)
+        if (isNewEvent && !isInitialRender && !isZooming) {
             // Use requestAnimationFrame to ensure the element is in the DOM before animating
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
                     eventDiv.classList.remove('fade-in');
                 });
             });
+        } else if (isNewEvent && isZooming) {
+            // During zoom, ensure the event is immediately visible (no fade-in)
+            eventDiv.classList.remove('fade-in');
+            eventDiv.style.opacity = '1';
         }
     });
     
@@ -565,19 +589,26 @@ function renderEvents() {
     const maxPushUpOffset = 160; // Maximum push up in pixels
     const pushUpOffset = Math.min(unusedLayers * layerSpacing, maxPushUpOffset);
     
-    // Log the number of active layers
-    console.log(`Active layers count: ${activeLayersCount} out of ${layerCount} maximum layers`);
-    console.log(`Pushing timeline up by ${pushUpOffset}px (${unusedLayers} unused layers)`);
     
     // Adjust all event positions to push timeline up by unused layers
     const allEventElements = eventsLayer.querySelectorAll('.event:not(.fade-out)');
     allEventElements.forEach(eventDiv => {
+        // Disable transitions during zoom for position updates
+        if (isZooming) {
+            eventDiv.style.transition = 'none';
+        }
+        
         const laneIndex = parseInt(eventDiv.getAttribute('data-lane-index'), 10);
         if (!isNaN(laneIndex)) {
             const verticalOffset = laneIndex * layerSpacing;
             // Calculate top position from bottom: layer height - event height - vertical offset - push up offset
             const topPosition = eventsLayerHeight - eventHeight - verticalOffset - pushUpOffset;
             eventDiv.style.top = `${topPosition}px`;
+        }
+        
+        // Re-enable transitions after position update (if not zooming)
+        if (!isZooming) {
+            eventDiv.style.transition = ''; // Reset to CSS default
         }
     });
     
@@ -605,7 +636,7 @@ function renderEvents() {
 
 /**
  * Updates the yearWidth variable and re-renders the timeline
- * All elements smoothly transition due to CSS transitions
+ * Animations are disabled during zoom for better performance
  */
 const maxZoomIn = 200;
 const maxZoomOut = 35;
@@ -621,8 +652,16 @@ function updateZoom(newYearWidth) {
         centerYear = minYear + (viewportCenter / yearWidth);
     }
     
+    // Set zooming flag to disable animations
+    isZooming = true;
+    
     yearWidth = newYearWidth;
     renderTimeline(false, centerYear);
+    
+    // Re-enable animations after a short delay to allow rendering to complete
+    setTimeout(() => {
+        isZooming = false;
+    }, 0);
     
     // Update button states (optional: disable at min/max zoom)
     zoomInBtn.disabled = yearWidth >= maxZoomIn; // Max zoom in
@@ -1099,6 +1138,24 @@ function init() {
             closeEventModal();
         }
     });
+    
+    // Hide instructions on first Shift+scroll
+    const scrollable = document.querySelector('.timeline-scrollable');
+    const instructionsContainer = document.querySelector('.instructions-container');
+    
+    if (scrollable && instructionsContainer) {
+        scrollable.addEventListener('wheel', (e) => {
+            // Check if Shift key is pressed
+            if (e.shiftKey && !instructionsHidden) {
+                instructionsHidden = true;
+                instructionsContainer.style.opacity = '0';
+                // Remove from DOM after fade out
+                setTimeout(() => {
+                    instructionsContainer.style.display = 'none';
+                }, 500);
+            }
+        });
+    }
     
     // Load events and render timeline
     loadEvents();
