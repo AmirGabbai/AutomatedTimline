@@ -103,13 +103,13 @@ function mapCategoriesToColors() {
 }
 
 /**
- * Fetches events from events.json file
+ * Fetches events from racism-events.json file
  * Finds the minimum start_year and maximum end_year
  * Sets the timeline range accordingly
  */
 async function loadEvents() {
     try {
-        const response = await fetch('events.json');
+        const response = await fetch('racism-events.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -151,14 +151,14 @@ async function loadEvents() {
         if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError') || 
             error.name === 'TypeError' || window.location.protocol === 'file:') {
             displayError(
-                'Failed to load events.json. This usually happens when opening the file directly.<br><br>' +
+                'Failed to load racism-events.json. This usually happens when opening the file directly.<br><br>' +
                 '<strong>Solution:</strong> Run a local server:<br>' +
                 '• Python: <code>python -m http.server 8000</code> then visit <code>http://localhost:8000</code><br>' +
                 '• Node.js: <code>npx http-server</code> then visit the shown URL<br><br>' +
                 'Or check the browser console for more details.'
             );
         } else {
-            displayError(`Failed to load events. Error: ${error.message}<br><br>Please check that events.json exists and is valid JSON.`);
+            displayError(`Failed to load events. Error: ${error.message}<br><br>Please check that racism-events.json exists and is valid JSON.`);
         }
     }
 }
@@ -484,14 +484,18 @@ function renderEvents() {
             
             // Add hover handlers for reflection effect
             const eventColor = getEventColor(event);
-            const eventDuration = event.end_year - event.start_year + 1;
-            const eventWidth = eventDuration * yearWidth;
-            const leftPosition = (event.start_year - minYear) * yearWidth;
+            const getCurrentEventMetrics = () => {
+                const duration = event.end_year - event.start_year + 1;
+                const currentWidth = duration * yearWidth;
+                const currentLeft = (event.start_year - minYear) * yearWidth;
+                return { currentWidth, currentLeft };
+            };
             
             eventDiv.addEventListener('mouseenter', () => {
-                // Use the same width as the event (with -10px adjustment)
-                const reflectionWidth = eventWidth - 10;
-                showReflectionBlock(event.start_year, event.end_year, eventColor, leftPosition, reflectionWidth);
+                const { currentWidth, currentLeft } = getCurrentEventMetrics();
+                // Use the same width as the event (with -10px adjustment) and keep it non-negative
+                const reflectionWidth = Math.max(currentWidth - 10, 0);
+                showReflectionBlock(event.start_year, event.end_year, eventColor, currentLeft, reflectionWidth);
             });
             
             eventDiv.addEventListener('mouseleave', () => {

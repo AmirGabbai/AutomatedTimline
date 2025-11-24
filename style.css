@@ -641,6 +641,7 @@ body {
     color: #333;
     direction: rtl;
     text-align: right;
+    white-space: pre-line;
 }
 
 .modal-footer {

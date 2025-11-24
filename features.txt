@@ -10,3 +10,5 @@ V - Embed YouTube videos directly inside the modal when events include YouTube l
 V - List all non-YouTube resource links inside the modal footer
 V - Provide previous/next controls plus click-outside, ESC, and close button actions for the modal
 V - Show warning guidance when events.json cannot be fetched due to CORS or missing file issues
+V - Detect events occurring in the same year and promote them into up to seven stacked lanes
+V - Shift the base timeline downward automatically as extra lanes are added so overlapping rows stay visible
