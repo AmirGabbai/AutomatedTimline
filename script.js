@@ -466,7 +466,7 @@ function renderEvents() {
                 videoLink.rel = 'noopener noreferrer';
                 videoLink.setAttribute('aria-label', `Watch video about ${event.title}`);
                 const videoIcon = document.createElement('img');
-                videoIcon.src = '/static/icons/video-icon-white.svg';
+                videoIcon.src = 'static/icons/video-icon-white.svg';
                 videoIcon.alt = 'Video';
                 videoLink.appendChild(videoIcon);
                 eventTitle.appendChild(videoLink);
