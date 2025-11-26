@@ -7,13 +7,14 @@ let events = [];
 
 /*
     original colors:
-    '#AE563C'
-    '#305C7A'
-    '#C6CB74'
-    '#E7B75C'
+
 */
 // Color Palette - 10 colors for automatic category assignment
 const colorPalette = [
+    '#AE563C',
+    '#305C7A',  
+    '#C6CB74',
+    '#E7B75C',
     '#5e72c7',  // Blue
     '#764ba2',  // Purple
     '#993b6f',  // Pink
