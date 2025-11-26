@@ -123,7 +123,7 @@ function mapCategoriesToColors() {
  */
 async function loadEvents() {
     try {
-        const response = await fetch('racism-events2.json');
+        const response = await fetch('static/events-files/racism-events3.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
