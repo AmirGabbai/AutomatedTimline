@@ -1,9 +1,17 @@
 // Timeline Configuration
 let yearWidth = 100; // Default width per year in pixels
+const minEventLabelWidth = 100; // Hide inline content on narrower blocks
 let minYear = null;
 let maxYear = null;
 let events = [];
 
+/*
+    original colors:
+    '#AE563C'
+    '#305C7A'
+    '#C6CB74'
+    '#E7B75C'
+*/
 // Color Palette - 10 colors for automatic category assignment
 const colorPalette = [
     '#5e72c7',  // Blue
@@ -63,6 +71,12 @@ const reflectionLayer = document.getElementById('reflectionLayer');
 const zoomInBtn = document.getElementById('zoomIn');
 const zoomOutBtn = document.getElementById('zoomOut');
 const categoriesMenu = document.querySelector('.categories-menu');
+const eventTooltip = document.createElement('div');
+eventTooltip.className = 'event-tooltip';
+eventTooltip.setAttribute('role', 'tooltip');
+document.body.appendChild(eventTooltip);
+let tooltipFollowCursor = false;
+let tooltipTargetElement = null;
 
 /**
  * Extracts all unique categories from the events array
@@ -109,7 +123,7 @@ function mapCategoriesToColors() {
  */
 async function loadEvents() {
     try {
-        const response = await fetch('racism-events.json');
+        const response = await fetch('racism-events2.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -438,7 +452,7 @@ function renderEvents() {
     });
     
     // Calculate lane occupancy for visible events
-    const layerCount = 7;
+    const layerCount = 8;
     const layerSpacing = 80;
     const eventsLayerHeight = 530; // Match the height from CSS
     const eventHeight = 40; // Match the event height from CSS
@@ -448,6 +462,7 @@ function renderEvents() {
         // Check if event element already exists
         let eventDiv = existingEventMap.get(eventIndex);
         const isNewEvent = !eventDiv;
+        const eventDurationYears = event.end_year - event.start_year + 1;
         
         if (isNewEvent) {
             // Create new event element
@@ -458,19 +473,20 @@ function renderEvents() {
             const eventTitle = document.createElement('span');
             eventTitle.className = 'event-title';
 
-            if (event.links) {
-                const videoLink = document.createElement('a');
-                videoLink.className = 'video-icon';
-                videoLink.href = event.links[0];
-                videoLink.target = '_blank';
-                videoLink.rel = 'noopener noreferrer';
-                videoLink.setAttribute('aria-label', `Watch video about ${event.title}`);
-                const videoIcon = document.createElement('img');
-                videoIcon.src = 'static/icons/video-icon-white.svg';
-                videoIcon.alt = 'Video';
-                videoLink.appendChild(videoIcon);
-                eventTitle.appendChild(videoLink);
-            }
+        if (event.links && event.links.some(link => isYouTubeLink(link))) {
+            const firstYoutubeLink = event.links.find(link => isYouTubeLink(link));
+            const videoLink = document.createElement('a');
+            videoLink.className = 'video-icon';
+            videoLink.href = firstYoutubeLink;
+            videoLink.target = '_blank';
+            videoLink.rel = 'noopener noreferrer';
+            videoLink.setAttribute('aria-label', `Watch video about ${event.title}`);
+            const videoIcon = document.createElement('img');
+            videoIcon.src = 'static/icons/video-icon-white.svg';
+            videoIcon.alt = 'Video';
+            videoLink.appendChild(videoIcon);
+            eventTitle.appendChild(videoLink);
+        }
 
             const titleText = document.createElement('span');
             titleText.className = 'event-title-text';
@@ -491,15 +507,22 @@ function renderEvents() {
                 return { currentWidth, currentLeft };
             };
             
-            eventDiv.addEventListener('mouseenter', () => {
+            eventDiv.addEventListener('mouseenter', (e) => {
                 const { currentWidth, currentLeft } = getCurrentEventMetrics();
                 // Use the same width as the event (with -10px adjustment) and keep it non-negative
                 const reflectionWidth = Math.max(currentWidth - 10, 0);
                 showReflectionBlock(event.start_year, event.end_year, eventColor, currentLeft, reflectionWidth);
+                const followCursor = eventDurationYears >= 15;
+                showEventTooltip(event.title, eventDiv, followCursor, e);
+            });
+            
+            eventDiv.addEventListener('mousemove', (e) => {
+                updateTooltipPosition(eventDiv, e);
             });
             
             eventDiv.addEventListener('mouseleave', () => {
                 hideReflectionBlock();
+                hideEventTooltip();
             });
             
             // Add click handler to show modal
@@ -533,9 +556,19 @@ function renderEvents() {
         eventDiv.style.background = eventColor;
         
         // Calculate width: (end_year - start_year + 1) * yearWidth
-        const eventDuration = event.end_year - event.start_year + 1;
-        const eventWidth = eventDuration * yearWidth;
-        eventDiv.style.width = `${eventWidth-10}px`;
+        const eventWidth = eventDurationYears * yearWidth;
+        const adjustedWidth = Math.max(eventWidth - 10, 0);
+        eventDiv.style.width = `${adjustedWidth}px`;
+
+        // Hide the inline title when the visual block is too narrow to keep it readable
+        const titleTextEl = eventDiv.querySelector('.event-title-text');
+        if (titleTextEl) {
+            titleTextEl.style.display = adjustedWidth < minEventLabelWidth ? 'none' : '';
+        }
+        const videoIconEl = eventDiv.querySelector('.video-icon');
+        if (videoIconEl) {
+            videoIconEl.style.display = adjustedWidth < minEventLabelWidth ? 'none' : '';
+        }
         
         // Calculate left position: (start_year - min_year) * yearWidth
         const leftPosition = (event.start_year - minYear) * yearWidth;
@@ -1069,6 +1102,41 @@ function applyOpacityToBackground(background) {
  * @param {number} leftPosition - Left position of the event in pixels
  * @param {number} eventWidth - Width of the event in pixels
  */
+function updateTooltipPosition(targetElement, cursorEvent = null) {
+    const element = targetElement || tooltipTargetElement;
+    if (!element || !eventTooltip) return;
+    
+    if (tooltipFollowCursor && cursorEvent) {
+        eventTooltip.style.left = `${cursorEvent.pageX}px`;
+        eventTooltip.style.top = `${cursorEvent.pageY}px`;
+        return;
+    }
+    
+    const rect = element.getBoundingClientRect();
+    const tooltipLeft = window.scrollX + rect.left + rect.width / 2;
+    const tooltipTop = window.scrollY + rect.top;
+    
+    eventTooltip.style.left = `${tooltipLeft}px`;
+    eventTooltip.style.top = `${tooltipTop}px`;
+}
+
+function showEventTooltip(text, targetElement, followCursor = false, cursorEvent = null) {
+    if (!text || !targetElement) return;
+    
+    tooltipTargetElement = targetElement;
+    tooltipFollowCursor = followCursor;
+    
+    eventTooltip.textContent = text;
+    updateTooltipPosition(targetElement, cursorEvent);
+    eventTooltip.classList.add('visible');
+}
+
+function hideEventTooltip() {
+    tooltipFollowCursor = false;
+    tooltipTargetElement = null;
+    eventTooltip.classList.remove('visible');
+}
+
 function showReflectionBlock(startYear, endYear, eventBackground, leftPosition, eventWidth) {
     // Clear any existing reflection block
     reflectionLayer.innerHTML = '';
