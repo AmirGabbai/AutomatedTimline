@@ -156,8 +156,37 @@ body {
 .timeline-container {
     position: relative;
     width: 100%;
-    height: 690px;
+    height: 940px;
+}
 
+.timeline-minimap {
+    position: relative;
+    width: 90%;
+    max-width: 1600px;
+    height: 90px;
+    margin: 25px auto 0;
+    border: 1px solid #d8d8d8;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+}
+
+.timeline-minimap canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.minimap-viewport {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    border: 2px solid #4a90e2;
+    background: rgba(74, 144, 226, 0.15);
+    pointer-events: none;
+    transition: left 0.1s ease;
 }
 
 /* Timeline Scrollable Content */
@@ -233,14 +262,23 @@ body {
     background-position: center;
 }
 
+/* Temporarily hide the timeline scrollbar without removing existing styling */
+.timeline-scrollable {
+    scrollbar-width: none !important;
+}
+
+.timeline-scrollable::-webkit-scrollbar {
+    display: none !important;
+}
+
 
 /* Events Layer - positioned above the timeline */
 .events-layer {
     position: absolute;
-    top: 0px;
+    top: 0;
     left: 0;
     width: 100%;
-    height: 550px;
+    height: 760px;
     z-index: 10;
 }
 
@@ -361,7 +399,7 @@ body {
 /* Timeline Line */
 .timeline-line {
     position: absolute;
-    top: 550px;
+    top: 780px;
     left: 0;
     width: 100%;
     height: 6px;
@@ -372,7 +410,7 @@ body {
 /* Reflection Layer - positioned just below the timeline line */
 .reflection-layer {
     position: absolute;
-    top: 556px;
+    top: 786px;
     left: 0;
     width: 100%;
     height: 45px;
@@ -397,7 +435,7 @@ body {
 /* Year Labels Layer - positioned below the timeline */
 .years-layer {
     position: absolute;
-    top: 560px;
+    top: 790px;
     left: 0;
     width: 100%;
     height: 140px;
