@@ -16,7 +16,7 @@ Modern browsers block `fetch()` requests when opening HTML files directly (file:
 
 - `index.html` - Main HTML file
 - `style.css` - Styling
-- `script.js` - Timeline logic and event handling
+- `js/config.js`, `js/categories.js`, `js/timeline.js`, `js/minimap.js`, `js/modal.js`, `js/zoom.js`, `js/data-loader.js`, `js/app.js` - Modularized timeline logic and bootstrapping
 - `events.json` - Event data (edit this to customize your timeline)
 - `server.py` - Simple Python HTTP server
 
@@ -24,7 +24,7 @@ Modern browsers block `fetch()` requests when opening HTML files directly (file:
 
 - `index.html` adds a `.timeline-minimap` container just below the primary timeline so the overview always sits in a predictable spot.
 - `style.css` defines `.timeline-minimap`, the canvas sizing, and the `.minimap-viewport` overlay. The minimap height is clamped to roughly 10–15% of the main timeline height so densities remain legible without consuming much vertical space.
-- `script.js` reuses the already-positioned `.event` nodes to draw lightweight rectangles inside the minimap canvas (`drawMinimap`) with the exact same gradients/solid colors as the primary timeline and keeps the translucent viewport in sync via `refreshMinimap`/`updateMinimapViewport`. Clicking or dragging inside the minimap calls `handleMinimapNavigation`, which converts the pointer position to the corresponding `scrollLeft` so the main view jumps to that portion.
+- `js/minimap.js` reuses the already-positioned `.event` nodes to draw lightweight rectangles inside the minimap canvas (`drawMinimap`) with the exact same gradients/solid colors as the primary timeline and keeps the translucent viewport in sync via `refreshMinimap`/`updateMinimapViewport`. Clicking or dragging inside the minimap calls `handleMinimapNavigation`, which converts the pointer position to the corresponding `scrollLeft` so the main view jumps to that portion.
 
 ## Customizing Events
 
