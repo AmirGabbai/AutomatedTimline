@@ -3,6 +3,7 @@
 // Timeline Configuration
 let yearWidth = 50; // Default width per year in pixels
 const minEventLabelWidth = 100; // Hide inline content on narrower blocks
+const condensedYearWidthThreshold = 45; // Below this we condense year labels
 let minYear = null;
 let maxYear = null;
 let events = [];

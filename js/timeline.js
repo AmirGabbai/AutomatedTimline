@@ -48,7 +48,18 @@ function renderYearLabels() {
 
     if (minYear === null || maxYear === null) return;
 
+    const shouldCondenseLabels = yearWidth <= condensedYearWidthThreshold;
+    yearsLayer.classList.toggle('condensed-labels', shouldCondenseLabels);
+    const yearLabelInterval = shouldCondenseLabels ? 2 : 1;
+
     for (let year = minYear; year <= maxYear; year++) {
+        const isBoundaryYear = year === minYear || year === maxYear;
+        const matchesInterval = (year - minYear) % yearLabelInterval === 0;
+
+        if (!isBoundaryYear && !matchesInterval) {
+            continue;
+        }
+
         const yearLabel = document.createElement('div');
         yearLabel.className = 'year-label';
         yearLabel.textContent = year;
@@ -292,10 +303,13 @@ function renderEvents() {
 
     const scrollable = document.querySelector('.timeline-scrollable');
     const timelineLine = scrollable.querySelector('.timeline-line');
+    const timelineBottomBar = document.querySelector('.timeline-bottom-bar');
 
     const baseTimelineLineTop = 780;
     const baseReflectionLayerTop = 786;
     const baseYearsLayerTop = 790;
+    const baseBottomBarBottom = 0;
+    const bottomBarExtraGap = 30;
 
     if (timelineLine) {
         timelineLine.style.top = `${baseTimelineLineTop - pushUpOffset}px`;
@@ -307,6 +321,11 @@ function renderEvents() {
 
     if (yearsLayer) {
         yearsLayer.style.top = `${baseYearsLayerTop - pushUpOffset}px`;
+    }
+
+    if (timelineBottomBar) {
+        const adjustedBottom = Math.max(baseBottomBarBottom, baseBottomBarBottom + pushUpOffset - bottomBarExtraGap);
+        timelineBottomBar.style.bottom = `${adjustedBottom}px`;
     }
 
     refreshMinimap({ redraw: true });
