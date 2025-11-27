@@ -25,21 +25,22 @@
             <!-- Year Labels Layer -->
             <div id="yearsLayer" class="years-layer"></div>
         </div>
-        <!-- Zoom Controls -->
-        <div class="controls">
-            <button id="zoomIn" class="zoom-btn">+</button>
-            <button id="zoomOut" class="zoom-btn">−</button>
-        </div>
         <div class="instructions-container">
             <p>
                 Hold Shift and scroll to move across the timeline. ⇆ Or use the minimap
             </p>
         </div>
-    </div>
-
-    <div class="timeline-minimap" aria-label="Timeline overview">
-        <canvas id="timelineMinimapCanvas"></canvas>
-        <div id="minimapViewport" class="minimap-viewport" aria-hidden="true"></div>
+        <div class="timeline-bottom-bar">
+            <!-- Zoom Controls -->
+            <div class="controls">
+                <button id="zoomIn" class="zoom-btn">+</button>
+                <button id="zoomOut" class="zoom-btn">−</button>
+            </div>
+            <div class="timeline-minimap" aria-label="Timeline overview">
+                <canvas id="timelineMinimapCanvas"></canvas>
+                <div id="minimapViewport" class="minimap-viewport" aria-hidden="true"></div>
+            </div>
+        </div>
     </div>
 
     <!-- Event Modal Popup -->
