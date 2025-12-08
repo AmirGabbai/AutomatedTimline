@@ -77,7 +77,7 @@ function renderCategoryButtons() {
             button.classList.add('hidden');
         }
 
-        button.addEventListener('click', () => toggleCategoryVisibility(category, button));
+        button.addEventListener('click', () => toggleCategoryVisibility(category));
 
         categoriesMenu.appendChild(button);
     });
@@ -124,14 +124,26 @@ function readURLParams() {
  * @param {string} category - The category to toggle.
  * @param {HTMLElement} button - The button element that was clicked.
  */
-function toggleCategoryVisibility(category, button) {
-    hiddenCategories[category] = !hiddenCategories[category];
+function toggleCategoryVisibility(category) {
+    const allVisible = Object.values(hiddenCategories).every(isHidden => !isHidden);
+    const visibleCount = Object.values(hiddenCategories).filter(isHidden => !isHidden).length;
 
-    if (hiddenCategories[category]) {
-        button.classList.add('hidden');
+    if (allVisible) {
+        // If everything is visible, hide all other categories and keep only the clicked one visible.
+        Object.keys(hiddenCategories).forEach(cat => {
+            hiddenCategories[cat] = cat !== category;
+        });
+    } else if (visibleCount === 1 && !hiddenCategories[category]) {
+        // If only this category is visible and it's clicked, show everything.
+        Object.keys(hiddenCategories).forEach(cat => {
+            hiddenCategories[cat] = false;
+        });
     } else {
-        button.classList.remove('hidden');
+        hiddenCategories[category] = !hiddenCategories[category];
     }
+
+    // Re-render buttons to reflect the new hidden state for all categories.
+    renderCategoryButtons();
 
     updateURL();
     renderEvents();
@@ -147,6 +159,7 @@ function isEventVisible(event) {
         return true;
     }
 
-    return event.categories.every(category => !hiddenCategories[category]);
+    // Show the event if it has at least one visible category, even if others are hidden.
+    return event.categories.some(category => !hiddenCategories[category]);
 }
 
