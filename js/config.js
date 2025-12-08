@@ -12,8 +12,8 @@ let events = [];
 const colorPalette = [
     '#AE563C',
     '#305C7A',
-    '#C6CB74',
     '#E7B75C',
+    '#C6CB74',
     '#5e72c7',  // Blue
     '#764ba2',  // Purple
     '#993b6f',  // Pink

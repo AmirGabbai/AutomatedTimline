@@ -2,7 +2,7 @@
 
 async function loadEvents() {
     try {
-        const response = await fetch('static/events-files/racism-events3-backup.json');
+        const response = await fetch('static/events-files/racism-events3.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
