@@ -69,6 +69,8 @@ let minimapNeedsRedraw = true;
 let minimapFrameRequested = false;
 let minimapDragging = false;
 let minimapHighlight = null;
+let minimapResizingSide = null;
+let minimapResizePreview = null;
 
 // Tooltip setup
 const eventTooltip = document.createElement('div');

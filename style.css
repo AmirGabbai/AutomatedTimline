@@ -172,6 +172,31 @@ body {
     transition: left 0.1s ease;
 }
 
+.minimap-viewport.resizing {
+    transition: none;
+}
+
+.minimap-handle {
+    position: absolute;
+    top: 0;
+    width: 10px;
+    height: 100%;
+    cursor: ew-resize;
+    background: linear-gradient(180deg, rgba(74, 144, 226, 0.18), rgba(74, 144, 226, 0.32));
+    pointer-events: auto;
+    user-select: none;
+}
+
+.minimap-handle.left {
+    left: -6px;
+    border-right: 2px solid rgba(74, 144, 226, 0.35);
+}
+
+.minimap-handle.right {
+    right: -6px;
+    border-left: 2px solid rgba(74, 144, 226, 0.35);
+}
+
 .minimap-highlight {
     position: absolute;
     top: 0;

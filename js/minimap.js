@@ -67,6 +67,12 @@ function drawMinimap() {
 function updateMinimapViewport() {
     if (!minimapViewport || !minimapCanvas) return;
 
+    if (minimapResizingSide && minimapResizePreview) {
+        minimapViewport.style.width = `${minimapResizePreview.width}px`;
+        minimapViewport.style.left = `${minimapResizePreview.left}px`;
+        return;
+    }
+
     const scrollable = getTimelineScrollable();
     if (!scrollable) return;
 
@@ -79,6 +85,81 @@ function updateMinimapViewport() {
 
     minimapViewport.style.width = `${viewportWidth}px`;
     minimapViewport.style.left = `${viewportLeft}px`;
+}
+
+function getViewportWidthBounds() {
+    const scrollable = getTimelineScrollable();
+    const timelineWidth = getTimelineWidth();
+    if (!scrollable || !timelineWidth || !minimapCanvas) return null;
+
+    const yearRange = maxYear - minYear + 1;
+    if (!yearRange) return null;
+
+    const minWidth = (scrollable.clientWidth * minimapCanvas.width) / (yearRange * maxZoomIn);
+    const maxWidth = (scrollable.clientWidth * minimapCanvas.width) / (yearRange * maxZoomOut);
+
+    return {
+        minWidth: Math.max(12, minWidth),
+        maxWidth: Math.max(minWidth, maxWidth)
+    };
+}
+
+function resizeMinimapViewport(side, clientX) {
+    const scrollable = getTimelineScrollable();
+    if (!scrollable || !minimapCanvas) return;
+
+    const timelineWidth = getTimelineWidth();
+    if (!timelineWidth) return;
+
+    const rect = minimapCanvas.getBoundingClientRect();
+    if (!rect.width) return;
+
+    const scaleX = minimapCanvas.width / timelineWidth;
+    const currentLeft = scrollable.scrollLeft * scaleX;
+    const currentWidth = scrollable.clientWidth * scaleX;
+    const bounds = getViewportWidthBounds();
+    if (!bounds) return;
+
+    const pointerX = clientX - rect.left;
+    const oppositeSide = side === 'left' ? 'right' : 'left';
+    let desiredWidth = currentWidth;
+
+    if (side === 'left') {
+        const anchorRight = currentLeft + currentWidth;
+        const newLeft = Math.min(Math.max(pointerX, 0), anchorRight - bounds.minWidth);
+        desiredWidth = anchorRight - newLeft;
+    } else {
+        const anchorLeft = currentLeft;
+        const newRight = Math.max(Math.min(pointerX, minimapCanvas.width), anchorLeft + bounds.minWidth);
+        desiredWidth = newRight - anchorLeft;
+    }
+
+    desiredWidth = Math.min(Math.max(desiredWidth, bounds.minWidth), bounds.maxWidth);
+
+    const yearRange = maxYear - minYear + 1;
+    const newYearWidthRaw = (scrollable.clientWidth * minimapCanvas.width) / (desiredWidth * yearRange);
+    const newYearWidth = Math.min(Math.max(newYearWidthRaw, maxZoomOut), maxZoomIn);
+
+    const scrollWidth = scrollable.scrollWidth;
+    const anchorFraction = oppositeSide === 'left'
+        ? scrollable.scrollLeft / scrollWidth
+        : (scrollable.scrollLeft + scrollable.clientWidth) / scrollWidth;
+
+    const previewLeft = oppositeSide === 'left'
+        ? currentLeft
+        : (currentLeft + currentWidth - desiredWidth);
+
+    minimapResizePreview = {
+        width: desiredWidth,
+        left: previewLeft,
+        newYearWidth,
+        anchor: { type: oppositeSide, fraction: anchorFraction }
+    };
+
+    if (minimapViewport) {
+        minimapViewport.style.width = `${desiredWidth}px`;
+        minimapViewport.style.left = `${previewLeft}px`;
+    }
 }
 
 function getMinimapFillStyle(background, x, width) {
@@ -208,6 +289,34 @@ function setupMinimapInteractions() {
 
     const endDrag = () => {
         minimapDragging = false;
+        minimapResizingSide = null;
+
+        if (minimapViewport) {
+            minimapViewport.classList.remove('resizing');
+        }
+
+        if (minimapResizePreview) {
+            updateZoom(minimapResizePreview.newYearWidth, { anchor: minimapResizePreview.anchor });
+            minimapResizePreview = null;
+        } else {
+            refreshMinimap();
+        }
+    };
+
+    const startResize = (side) => (event) => {
+        minimapResizingSide = side;
+        minimapResizePreview = null;
+        if (minimapViewport) {
+            minimapViewport.classList.add('resizing');
+        }
+        resizeMinimapViewport(side, event.clientX);
+        event.preventDefault();
+        event.stopPropagation();
+    };
+
+    const moveResize = (event) => {
+        if (!minimapResizingSide) return;
+        resizeMinimapViewport(minimapResizingSide, event.clientX);
     };
 
     minimapCanvas.addEventListener('mousedown', startDrag);
@@ -217,6 +326,29 @@ function setupMinimapInteractions() {
         minimapDragging = false;
     });
     minimapCanvas.addEventListener('click', (event) => handleMinimapNavigation(event.clientX));
+
+    if (minimapViewport) {
+        let leftHandle = minimapViewport.querySelector('.minimap-handle.left');
+        let rightHandle = minimapViewport.querySelector('.minimap-handle.right');
+
+        if (!leftHandle) {
+            leftHandle = document.createElement('div');
+            leftHandle.className = 'minimap-handle left';
+            minimapViewport.appendChild(leftHandle);
+        }
+
+        if (!rightHandle) {
+            rightHandle = document.createElement('div');
+            rightHandle.className = 'minimap-handle right';
+            minimapViewport.appendChild(rightHandle);
+        }
+
+        leftHandle.addEventListener('mousedown', startResize('left'));
+        rightHandle.addEventListener('mousedown', startResize('right'));
+    }
+
+    window.addEventListener('mousemove', moveResize);
+    window.addEventListener('mouseup', endDrag);
 
     refreshMinimap({ redraw: true });
 }
