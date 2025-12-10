@@ -7,7 +7,7 @@ const condensedYearWidthThreshold = 45; // Below this we condense year labels
 // Decide which year labels to render based on the current zoom (yearWidth)
 const yearLabelIntervalLevels = [
     { maxWidth: 40, interval: 10 }, // Far zoomed out
-    { maxWidth: 70, interval: 5 },
+    { maxWidth: 90, interval: 5 },  // Keep 5-year ticks visible longer
     { maxWidth: 130, interval: 2 },
     { maxWidth: Infinity, interval: 1 } // Fully detailed
 ];
@@ -48,6 +48,11 @@ let isZooming = false;
 
 // Track the number of layers that contain events
 let activeLayersCount = 0;
+
+// Timeline drag state
+let timelineDragging = false;
+let timelineDragStartX = 0;
+let timelineDragStartScrollLeft = 0;
 
 // DOM Elements
 const eventsLayer = document.getElementById('eventsLayer');

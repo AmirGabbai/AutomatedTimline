@@ -37,6 +37,7 @@ function init() {
         }
     });
 
+    setupTimelineDrag();
     setupMinimapInteractions();
     loadEvents();
 }

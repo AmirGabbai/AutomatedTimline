@@ -192,8 +192,13 @@ body {
     height: 100%;
     overflow-x: auto;
     overflow-y: visible;
+    cursor: grab;
     /* Firefox scrollbar styling */
     scrollbar-width: auto;
+}
+
+.timeline-scrollable.dragging {
+    cursor: grabbing;
 }
 
 /* Custom Scrollbar Styling for Timeline Scrollable (Webkit browsers) */

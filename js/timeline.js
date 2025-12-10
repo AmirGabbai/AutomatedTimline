@@ -10,6 +10,38 @@ function getTimelineScrollable() {
     return document.querySelector('.timeline-scrollable');
 }
 
+function setupTimelineDrag() {
+    const scrollable = getTimelineScrollable();
+    if (!scrollable) return;
+
+    const startDrag = (event) => {
+        if (event.button !== 0) return;
+        // Prevent dragging when interacting with an event block
+        if (event.target.closest('.event')) return;
+        timelineDragging = true;
+        timelineDragStartX = event.clientX;
+        timelineDragStartScrollLeft = scrollable.scrollLeft;
+        scrollable.classList.add('dragging');
+    };
+
+    const handleDrag = (event) => {
+        if (!timelineDragging) return;
+        const deltaX = event.clientX - timelineDragStartX;
+        scrollable.scrollLeft = timelineDragStartScrollLeft - deltaX;
+    };
+
+    const endDrag = () => {
+        if (!timelineDragging) return;
+        timelineDragging = false;
+        scrollable.classList.remove('dragging');
+    };
+
+    scrollable.addEventListener('mousedown', startDrag);
+    window.addEventListener('mousemove', handleDrag);
+    window.addEventListener('mouseup', endDrag);
+    scrollable.addEventListener('mouseleave', endDrag);
+}
+
 function renderTimeline(scrollToEnd = false, centerYear = null) {
     if (minYear === null || maxYear === null) return;
 
