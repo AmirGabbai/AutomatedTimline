@@ -42,9 +42,6 @@ let isZooming = false;
 // Track the number of layers that contain events
 let activeLayersCount = 0;
 
-// Track if instructions have been hidden (to only hide once)
-let instructionsHidden = false;
-
 // DOM Elements
 const eventsLayer = document.getElementById('eventsLayer');
 const yearsLayer = document.getElementById('yearsLayer');

@@ -37,21 +37,6 @@ function init() {
         }
     });
 
-    const scrollable = document.querySelector('.timeline-scrollable');
-    const instructionsContainer = document.querySelector('.instructions-container');
-
-    if (scrollable && instructionsContainer) {
-        scrollable.addEventListener('wheel', (e) => {
-            if (e.shiftKey && !instructionsHidden) {
-                instructionsHidden = true;
-                instructionsContainer.style.opacity = '0';
-                setTimeout(() => {
-                    instructionsContainer.style.display = 'none';
-                }, 500);
-            }
-        });
-    }
-
     setupMinimapInteractions();
     loadEvents();
 }

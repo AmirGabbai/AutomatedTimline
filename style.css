@@ -29,31 +29,6 @@ body {
     pointer-events: auto;
 }
 
-/* Instructions Container */
-.instructions-container {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    transform: none;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    transition: opacity 0.5s ease;
-}
-/* Use a handwriting-type font for .instructions-container text */
-.instructions-container p {
-    font-family: 'Caveat', 'Architects Daughter', 'Shadows Into Light', 'Comic Sans MS', 'Indie Flower', cursive, sans-serif;
-    font-size: 14px;
-    color: #2d2620;         /* Soft whiteboard marker/dark color */
-    padding: 16px 26px;
-    letter-spacing: 0.01em;
-    line-height: 1.4;
-}
-
-/* Optionally, make sure the font files are loaded in your HTML, eg:
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Architects+Daughter&family=Shadows+Into+Light&display=swap" rel="stylesheet">
-*/
-
 .zoom-btn {
     width: 55px;
     height: 55px;
