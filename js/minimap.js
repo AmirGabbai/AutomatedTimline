@@ -221,3 +221,40 @@ function setupMinimapInteractions() {
     refreshMinimap({ redraw: true });
 }
 
+function highlightMinimapEvent(eventDiv) {
+    if (!minimapHighlight || !minimapCanvas) return;
+
+    const timelineWidth = getTimelineWidth();
+    if (!timelineWidth) return;
+
+    // Ensure we have up-to-date canvas dimensions for scaling
+    const containerWidth = minimapCanvas.clientWidth || minimapCanvas.parentElement?.clientWidth || 0;
+    const containerHeight = minimapCanvas.clientHeight || minimapCanvas.parentElement?.clientHeight || 0;
+    if (!containerWidth || !containerHeight) return;
+
+    const scaleX = (minimapCanvas.width || containerWidth) / timelineWidth;
+    const laneCount = Math.max(activeLayersCount, 1);
+    const laneHeight = containerHeight / laneCount;
+
+    const left = parseFloat(eventDiv.style.left) || 0;
+    const width = eventDiv.offsetWidth || eventDiv.getBoundingClientRect().width || 0;
+    const laneIndex = parseInt(eventDiv.getAttribute('data-lane-index'), 10) || 0;
+
+    const highlightWidth = Math.max(width * scaleX, 1);
+    const barHeight = Math.max(laneHeight - 4, 2);
+    const x = left * scaleX;
+    const y = containerHeight - (laneIndex + 1) * laneHeight + (laneHeight - barHeight) / 2;
+
+    minimapHighlight.style.display = 'block';
+    minimapHighlight.style.left = `${x}px`;
+    minimapHighlight.style.width = `${highlightWidth}px`;
+    minimapHighlight.style.height = `${barHeight}px`;
+    minimapHighlight.style.top = `${y}px`;
+}
+
+function clearMinimapHighlight() {
+    if (minimapHighlight) {
+        minimapHighlight.style.display = 'none';
+    }
+}
+

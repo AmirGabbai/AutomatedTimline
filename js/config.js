@@ -49,12 +49,14 @@ const reflectionLayer = document.getElementById('reflectionLayer');
 const zoomInBtn = document.getElementById('zoomIn');
 const zoomOutBtn = document.getElementById('zoomOut');
 const categoriesMenu = document.querySelector('.categories-menu');
+const timelineMinimap = document.querySelector('.timeline-minimap');
 const minimapCanvas = document.getElementById('timelineMinimapCanvas');
 const minimapViewport = document.getElementById('minimapViewport');
 const minimapCtx = minimapCanvas ? minimapCanvas.getContext('2d') : null;
 let minimapNeedsRedraw = true;
 let minimapFrameRequested = false;
 let minimapDragging = false;
+let minimapHighlight = null;
 
 // Tooltip setup
 const eventTooltip = document.createElement('div');
@@ -63,4 +65,13 @@ eventTooltip.setAttribute('role', 'tooltip');
 document.body.appendChild(eventTooltip);
 let tooltipFollowCursor = false;
 let tooltipTargetElement = null;
+
+// Minimap highlight overlay for syncing hover state from the main timeline
+if (timelineMinimap) {
+    minimapHighlight = document.createElement('div');
+    minimapHighlight.id = 'minimapHighlight';
+    minimapHighlight.className = 'minimap-highlight';
+    minimapHighlight.style.display = 'none';
+    timelineMinimap.appendChild(minimapHighlight);
+}
 

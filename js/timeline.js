@@ -189,6 +189,7 @@ function renderEvents() {
                 showReflectionBlock(event.start_year, event.end_year, eventColor, currentLeft, reflectionWidth);
                 const followCursor = eventDurationYears >= 15;
                 showEventTooltip(event.title, eventDiv, followCursor, e);
+                highlightMinimapEvent(eventDiv);
             });
 
             eventDiv.addEventListener('mousemove', (e) => {
@@ -198,6 +199,7 @@ function renderEvents() {
             eventDiv.addEventListener('mouseleave', () => {
                 hideReflectionBlock();
                 hideEventTooltip();
+                clearMinimapHighlight();
             });
 
             eventDiv.addEventListener('click', (e) => {
