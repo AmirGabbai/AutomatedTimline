@@ -16,6 +16,7 @@ function setupTimelineDrag() {
 
     const startDrag = (event) => {
         if (event.button !== 0) return;
+        if (isZooming) return; // Skip drag while zoom gestures are active
         // Prevent dragging when interacting with an event block
         if (event.target.closest('.event')) return;
         timelineDragging = true;

@@ -9,6 +9,7 @@ function init() {
 
     window.addEventListener('popstate', handlePopState);
 
+    setupWheelZoom();
     const modal = document.getElementById('eventModal');
     const modalCloseBtn = document.getElementById('modalCloseBtn');
 

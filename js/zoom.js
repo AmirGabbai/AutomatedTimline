@@ -24,7 +24,9 @@ function updateZoom(newYearWidth, options = {}) {
             const currentScrollLeft = scrollable.scrollLeft;
             const viewportCenter = currentScrollLeft + scrollable.clientWidth / 2;
             const centerYear = minYear + (viewportCenter / yearWidth);
-            anchorInfo = { type: 'center', centerYear };
+            // Keep center anchoring stable while zooming from wheel/pinch.
+            const targetCenterYear = anchor?.centerYear ?? centerYear;
+            anchorInfo = { type: 'center', centerYear: targetCenterYear };
         }
     }
 
@@ -68,5 +70,58 @@ function zoomIn() {
 function zoomOut() {
     const newWidth = Math.max(yearWidth - 20, maxZoomOut);
     updateZoom(newWidth);
+}
+
+// Enable pinch/trackpad zooming on the timeline scroll area.
+function setupWheelZoom() {
+    const scrollable = getTimelineScrollable();
+    if (!scrollable) return;
+
+    let wheelFramePending = false;
+    let pendingZoomWidth = yearWidth;
+    let gestureAnchorYear = null;
+    let gestureTimeout = null;
+
+    const handleWheel = (event) => {
+        // On most browsers a pinch gesture arrives as a wheel event with ctrlKey.
+        if (!event.ctrlKey && !event.metaKey) return;
+
+        // Prevent the browser page zoom and keep the gesture within the timeline.
+        event.preventDefault();
+
+        // Determine the year under the cursor so we can keep it centered while zooming.
+        const rect = scrollable.getBoundingClientRect();
+        const offsetX = event.clientX - rect.left + scrollable.scrollLeft;
+        const anchorYear = minYear + (offsetX / yearWidth);
+        if (gestureAnchorYear === null) {
+            gestureAnchorYear = anchorYear;
+        }
+
+        // Smooth zoom factor based on gesture intensity; clamp to our limits.
+        const zoomFactor = 1 + Math.min(Math.abs(event.deltaY) * 0.0025, 1.5);
+        pendingZoomWidth = event.deltaY < 0
+            ? Math.min(pendingZoomWidth * zoomFactor, maxZoomIn)
+            : Math.max(pendingZoomWidth / zoomFactor, maxZoomOut);
+
+        // Throttle via rAF so we update smoothly without over-rendering.
+        if (!wheelFramePending) {
+            wheelFramePending = true;
+            requestAnimationFrame(() => {
+                wheelFramePending = false;
+                updateZoom(pendingZoomWidth, { anchor: { type: 'center', centerYear: gestureAnchorYear } });
+            });
+        }
+
+        // Reset the gesture anchor after a short pause in wheel events.
+        if (gestureTimeout) {
+            clearTimeout(gestureTimeout);
+        }
+        gestureTimeout = setTimeout(() => {
+            gestureAnchorYear = null;
+            pendingZoomWidth = yearWidth;
+        }, 180);
+    };
+
+    scrollable.addEventListener('wheel', handleWheel, { passive: false });
 }
 

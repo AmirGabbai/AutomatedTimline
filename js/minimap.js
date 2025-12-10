@@ -322,8 +322,12 @@ function setupMinimapInteractions() {
     minimapCanvas.addEventListener('mousedown', startDrag);
     window.addEventListener('mousemove', moveDrag);
     window.addEventListener('mouseup', endDrag);
-    minimapCanvas.addEventListener('mouseleave', () => {
-        minimapDragging = false;
+    // Keep dragging active while the mouse is down, even if leaving the viewport,
+    // so the timeline follows the cursor across the minimap area.
+    minimapCanvas.addEventListener('mouseleave', (event) => {
+        if (!event.buttons) {
+            minimapDragging = false;
+        }
     });
     minimapCanvas.addEventListener('click', (event) => handleMinimapNavigation(event.clientX));
 
