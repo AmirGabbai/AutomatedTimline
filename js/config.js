@@ -4,6 +4,13 @@
 let yearWidth = 50; // Default width per year in pixels
 const minEventLabelWidth = 100; // Hide inline content on narrower blocks
 const condensedYearWidthThreshold = 45; // Below this we condense year labels
+// Decide which year labels to render based on the current zoom (yearWidth)
+const yearLabelIntervalLevels = [
+    { maxWidth: 40, interval: 10 }, // Far zoomed out
+    { maxWidth: 70, interval: 5 },
+    { maxWidth: 130, interval: 2 },
+    { maxWidth: Infinity, interval: 1 } // Fully detailed
+];
 let minYear = null;
 let maxYear = null;
 let events = [];

@@ -48,13 +48,17 @@ function renderYearLabels() {
 
     if (minYear === null || maxYear === null) return;
 
-    const shouldCondenseLabels = yearWidth <= condensedYearWidthThreshold;
+    const yearLabelInterval = getYearLabelInterval();
+    const shouldCondenseLabels = yearWidth <= condensedYearWidthThreshold || yearLabelInterval > 1;
     yearsLayer.classList.toggle('condensed-labels', shouldCondenseLabels);
-    const yearLabelInterval = shouldCondenseLabels ? 2 : 1;
+
+    const useRoundedIntervals = yearLabelInterval >= 5;
 
     for (let year = minYear; year <= maxYear; year++) {
         const isBoundaryYear = year === minYear || year === maxYear;
-        const matchesInterval = (year - minYear) % yearLabelInterval === 0;
+        const matchesInterval = useRoundedIntervals
+            ? year % yearLabelInterval === 0 // Align to round numbers (e.g., 1910, 1920)
+            : (year - minYear) % yearLabelInterval === 0;
 
         if (!isBoundaryYear && !matchesInterval) {
             continue;
@@ -71,6 +75,11 @@ function renderYearLabels() {
 
         yearsLayer.appendChild(yearLabel);
     }
+}
+
+function getYearLabelInterval() {
+    const intervalLevel = yearLabelIntervalLevels.find(level => yearWidth <= level.maxWidth);
+    return intervalLevel ? intervalLevel.interval : 1;
 }
 
 function getEventColor(event) {
