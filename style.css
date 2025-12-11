@@ -371,18 +371,25 @@ body {
 
 .event-tooltip {
     position: absolute;
-    padding: 6px 12px;
-    background: rgba(33, 33, 33, 0.92);
-    color: #ffffff;
+    padding: 0;
+    background: #f8fafc;
+    color: #0f172a;
     font-size: 13px;
     font-weight: 600;
-    border-radius: 6px;
+    border-radius: 12px;
     pointer-events: none;
-    transform: translate(-50%, calc(-100% - 10px));
+    transform: translate(-50%, calc(-100% - 14px));
     opacity: 0;
     transition: opacity 0.15s ease;
-    white-space: nowrap;
+    white-space: normal;
     z-index: 1200;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+    max-width: 320px;
+    width: 280px;
+    direction: rtl;
+    text-align: right;
+    overflow: hidden;
 }
 
 .event-tooltip.visible {
@@ -393,11 +400,82 @@ body {
     content: '';
     position: absolute;
     left: 50%;
-    bottom: -6px;
+    bottom: -8px;
     transform: translateX(-50%);
-    border-width: 6px 6px 0 6px;
+    border-width: 8px 9px 0 9px;
     border-style: solid;
-    border-color: rgba(33, 33, 33, 0.92) transparent transparent transparent;
+    border-color: #f8fafc transparent transparent transparent;
+    filter: drop-shadow(0 -1px 1px rgba(0, 0, 0, 0.04));
+}
+
+.event-tooltip.below {
+    transform: translate(-50%, 14px);
+}
+
+.event-tooltip.below::after {
+    top: -8px;
+    bottom: auto;
+    border-width: 0 9px 8px 9px;
+    border-color: transparent transparent #f8fafc transparent;
+    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.06));
+}
+
+.tooltip-hero {
+    height: 74px;
+    background: linear-gradient(135deg, #e5e7eb, #f1f5f9);
+}
+
+.tooltip-body {
+    padding: 12px 14px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tooltip-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tooltip-years {
+    font-size: 14px;
+    font-weight: 600;
+    color: #475569;
+}
+
+.tooltip-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.2;
+}
+
+.tooltip-categories {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.tooltip-category-circle {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+}
+
+.tooltip-description {
+    font-size: 14px;
+    font-weight: 500;
+    color: #334155;
+    line-height: 1.4;
+    display: -webkit-box;
+    line-clamp: 3;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .event-title {

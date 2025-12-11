@@ -232,7 +232,9 @@ function renderEvents() {
                 const reflectionWidth = Math.max(currentWidth - 10, 0);
                 showReflectionBlock(event.start_year, event.end_year, eventColor, currentLeft, reflectionWidth);
                 const followCursor = eventDurationYears >= 15;
-                showEventTooltip(event.title, eventDiv, followCursor, e);
+                const laneIndex = parseInt(eventDiv.getAttribute('data-lane-index') || '0', 10);
+                const placement = laneIndex >= 7 ? 'below' : 'above';
+                showEventTooltip(event, eventDiv, followCursor, e, placement);
                 highlightMinimapEvent(eventDiv);
             });
 

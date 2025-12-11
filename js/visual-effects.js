@@ -1,5 +1,7 @@
 // Tooltip positioning and reflection helpers.
 
+let tooltipPlacement = 'above';
+
 function updateTooltipPosition(targetElement, cursorEvent = null) {
     const element = targetElement || tooltipTargetElement;
     if (!element || !eventTooltip) return;
@@ -12,19 +14,68 @@ function updateTooltipPosition(targetElement, cursorEvent = null) {
 
     const rect = element.getBoundingClientRect();
     const tooltipLeft = window.scrollX + rect.left + rect.width / 2;
-    const tooltipTop = window.scrollY + rect.top;
+    const tooltipTop = tooltipPlacement === 'below'
+        ? window.scrollY + rect.bottom
+        : window.scrollY + rect.top;
 
     eventTooltip.style.left = `${tooltipLeft}px`;
     eventTooltip.style.top = `${tooltipTop}px`;
 }
 
-function showEventTooltip(text, targetElement, followCursor = false, cursorEvent = null) {
-    if (!text || !targetElement) return;
+function buildTooltipDescription(event, maxLength = 110) {
+    if (!event) return '';
+
+    let firstDescription = '';
+    if (event.descriptions && typeof event.descriptions === 'object') {
+        const values = Object.values(event.descriptions).filter(Boolean);
+        firstDescription = typeof values[0] === 'string' ? values[0] : '';
+    } else if (typeof event.description === 'string') {
+        firstDescription = event.description;
+    }
+
+    if (!firstDescription) return '';
+
+    const cleanText = firstDescription.trim();
+    if (cleanText.length > maxLength) {
+        return `${cleanText.slice(0, maxLength).trim()}...`;
+    }
+    return `${cleanText}...`;
+}
+
+function buildTooltipHTML(event) {
+    const yearsText = event.start_year === event.end_year
+        ? `${event.start_year}`
+        : `${event.start_year}-${event.end_year}`;
+
+    const categoryCircles = (event.categories || []).map(category => {
+        const color = categoryColors[category] || defaultColor;
+        return `<span class="tooltip-category-circle" style="background-color: ${color};"></span>`;
+    }).join('');
+
+    const descriptionPreview = buildTooltipDescription(event);
+
+    return `
+        <div class="tooltip-hero"></div>
+        <div class="tooltip-body">
+            <div class="tooltip-meta">
+                <div class="tooltip-categories">${categoryCircles}</div>
+                <div class="tooltip-years">${yearsText}</div>
+            </div>
+            <div class="tooltip-title">${event.title || ''}</div>
+            <div class="tooltip-description">${descriptionPreview}</div>
+        </div>
+    `;
+}
+
+function showEventTooltip(eventData, targetElement, followCursor = false, cursorEvent = null, placement = 'above') {
+    if (!eventData || !targetElement) return;
 
     tooltipTargetElement = targetElement;
     tooltipFollowCursor = followCursor;
+    tooltipPlacement = placement === 'below' ? 'below' : 'above';
+    eventTooltip.classList.toggle('below', tooltipPlacement === 'below');
 
-    eventTooltip.textContent = text;
+    eventTooltip.innerHTML = buildTooltipHTML(eventData);
     updateTooltipPosition(targetElement, cursorEvent);
     eventTooltip.classList.add('visible');
 }
