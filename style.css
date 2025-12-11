@@ -5,19 +5,6 @@
     box-sizing: border-box;
 }
 
-:root {
-    --timeline-height: clamp(620px, 90vh, 900px);
-    --timeline-side-padding: clamp(10px, 3vw, 20px);
-    --events-top: clamp(60px, 9vh, 100px);
-    --events-height: clamp(440px, 60vh, 700px);
-    --timeline-line-gap: clamp(22px, 3vh, 30px);
-    --timeline-years-gap: 4px;
-    --minimap-height: clamp(70px, 12vh, 90px);
-    --controls-size: clamp(48px, 6vw, 55px);
-    --controls-font: clamp(20px, 2vw, 24px);
-    --category-max-width: 100vw;
-}
-
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f5f5f5;
@@ -43,10 +30,10 @@ body {
 }
 
 .zoom-btn {
-    width: var(--controls-size);
-    height: var(--controls-size);
+    width: 55px;
+    height: 55px;
     padding: 0;
-    font-size: var(--controls-font);
+    font-size: 24px;
     font-weight: 600;
     color: white;
     background-color: #4a90e2;
@@ -78,20 +65,20 @@ body {
 /* Categories Menu */
 .categories-menu {
     position: fixed;
-    top: clamp(12px, 3vh, 30px);
+    top: 30px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: clamp(10px, 2vw, 15px);
+    gap: 15px;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    padding: 10px 16px;
+    padding: 10px 20px;
     background-color: rgba(255, 255, 255, 0.95);
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    max-width: var(--category-max-width);
+    max-width: 90%;
 }
 
 /* Category Button - Triangle Shape */
@@ -141,31 +128,42 @@ body {
 .timeline-container {
     position: relative;
     width: 100%;
-    height: var(--timeline-height);
+    height: 900px;
     border: 1px solid #f70000;
-    padding: 0;
 }
 
 .timeline-bottom-bar {
-    position: absolute;
-    bottom: clamp(-12px, -1vh, -20px);
-    left: var(--timeline-side-padding);
-    right: var(--timeline-side-padding);
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: clamp(12px, 2vw, 24px);
+    width: 75vw;
     display: flex;
     align-items: center;
-    gap: clamp(12px, 3vw, 24px);
+    gap: clamp(12px, 2vw, 24px);
     z-index: 1000;
-    margin-top: 40px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
     border: 1px solid #2500f7;
-    flex-wrap: wrap;
-    justify-content: center;
-    padding: 8px 10px;
+    backdrop-filter: blur(4px);
+}
+
+@media (max-width: 768px) {
+    .timeline-bottom-bar {
+        width: calc(100% - 20px);
+        padding: 10px 12px;
+        gap: 12px;
+        flex-direction: column;
+        align-items: stretch;
+    }
 }
 
 .timeline-minimap {
     position: relative;
     flex: 1;
-    height: var(--minimap-height);
+    height: 90px;
     margin: 0;
     border: 1px solid #d8d8d8;
     border-radius: 10px;
@@ -321,10 +319,10 @@ body {
 /* Events Layer - positioned above the timeline */
 .events-layer {
     position: absolute;
-    top: var(--events-top);
+    top: 50px;
     left: 0;
     width: 100%;
-    height: var(--events-height);
+    height: 700px;
     z-index: 10;
     border: 1px solid #00ff00;
 }
@@ -446,7 +444,7 @@ body {
 /* Timeline Line */
 .timeline-line {
     position: absolute;
-    top: calc(var(--events-top) + var(--events-height) + var(--timeline-line-gap));
+    top: 780px;
     left: 0;
     width: 100%;
     height: 6px;
@@ -457,7 +455,7 @@ body {
 /* Reflection Layer - positioned just below the timeline line */
 .reflection-layer {
     position: absolute;
-    top: calc(var(--events-top) + var(--events-height) + var(--timeline-line-gap) + 6px);
+    top: 786px;
     left: 0;
     width: 100%;
     height: 45px;
@@ -482,67 +480,12 @@ body {
 /* Year Labels Layer - positioned below the timeline */
 .years-layer {
     position: absolute;
-    top: calc(var(--events-top) + var(--events-height) + var(--timeline-line-gap) + 10px);
+    top: 790px;
     left: 0;
     width: 100%;
     height: 140px;
     z-index: 10;
     max-height: 50px;
-}
-
-@media (max-width: 1440px) {
-    body {
-        padding: 12px;
-    }
-
-    .category-btn {
-        width: 110px;
-        height: 46px;
-        font-size: 13px;
-    }
-
-    .event {
-        font-size: 13px;
-        height: 40px;
-    }
-
-    .timeline-bottom-bar {
-        gap: 14px;
-    }
-}
-
-@media (max-width: 1152px) {
-    :root {
-        --timeline-height: clamp(540px, 88vh, 760px);
-        --events-height: clamp(380px, 58vh, 640px);
-        --timeline-line-gap: clamp(18px, 2.5vh, 24px);
-        --minimap-height: clamp(64px, 12vh, 80px);
-        --controls-size: clamp(44px, 7vw, 50px);
-    }
-
-    .timeline-container {
-        padding: 0 clamp(8px, 2vw, 14px);
-    }
-
-    .category-btn {
-        width: 100px;
-        height: 44px;
-        font-size: 12px;
-    }
-
-    .timeline-bottom-bar {
-        padding: 6px 8px;
-        gap: 12px;
-    }
-
-    .event {
-        font-size: 12px;
-        padding: 4px 10px;
-    }
-
-    .year-label {
-        font-size: 14px;
-    }
 }
 
 /* Individual Year Label */
