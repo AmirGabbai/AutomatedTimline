@@ -223,7 +223,7 @@ body {
     justify-content: center;
     color: white;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 18px;
     text-align: center;
     padding: 0 15px 0 10px;
     transition: all 0.3s ease;
@@ -824,7 +824,8 @@ body {
 }
 
 .modal-content {
-    background-color: #e8e8e8;
+    position: relative;
+    background: linear-gradient(135deg, #f8fafc 0%, #eef1f7 50%, #f9fafc 100%);
     margin: auto;
     padding: 30px;
     border-radius: 15px;
@@ -837,6 +838,7 @@ body {
     overflow: hidden;
     animation: modalSlideIn 0.3s ease;
 }
+
 
 @keyframes modalSlideIn {
     from {

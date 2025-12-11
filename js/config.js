@@ -17,9 +17,9 @@ let events = [];
 
 // Color Palette - 10 colors for automatic category assignment
 const colorPalette = [
+    '#E7B75C',
     '#AE563C',
     '#305C7A',
-    '#E7B75C',
     '#C6CB74',
     '#5e72c7',  // Blue
     '#764ba2',  // Purple
