@@ -18,6 +18,89 @@ body {
     padding-top: 0;
 }
 
+.brand-sticker {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    width: 140px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 14px;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.14);
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    will-change: transform;
+    z-index: 1200;
+    backdrop-filter: blur(3px);
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    transform-origin: center;
+}
+
+.brand-sticker img {
+    display: block;
+    width: 100%;
+    height: auto;
+    pointer-events: none;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    transform: translateZ(0);
+}
+
+.brand-sticker:hover {
+    /* Keep rotation subtle to avoid blur artifacts */
+    transform: translate3d(0, 2px, 0) scale(1.02) rotate(3deg);
+    box-shadow: 0 10px 26px rgba(15, 23, 42, 0.22);
+}
+
+.brand-sticker:active {
+    transform: translateY(0);
+}
+
+.watermark-logos {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 10px;
+
+    pointer-events: none;
+    z-index: 1100;
+    backdrop-filter: blur(2px);
+}
+
+.watermark-logos img {
+    display: block;
+    height: 38px;
+    width: auto;
+    object-fit: contain;
+    filter: grayscale(100%);
+    opacity: 0.72;
+}
+
+@media (max-width: 768px) {
+    .brand-sticker {
+        width: 120px;
+        top: 10px;
+        right: 10px;
+        padding: 6px 10px;
+    }
+    .watermark-logos {
+        top: 10px;
+        left: 10px;
+        gap: 8px;
+        padding: 4px 8px;
+    }
+    .watermark-logos img {
+        height: 32px;
+    }
+}
+
 /* Zoom Controls */
 .controls {
     pointer-events: none;
@@ -198,6 +281,7 @@ body {
     position: relative;
     width: 100%;
     height: 900px;
+    cursor: default; /* Avoid showing drag cursor on the wrapper */
 }
 
 .timeline-bottom-bar {
