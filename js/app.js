@@ -3,9 +3,10 @@
 function init() {
     zoomInBtn.addEventListener('click', zoomIn);
     zoomOutBtn.addEventListener('click', zoomOut);
+    zoomMinBtn.addEventListener('click', zoomToMin);
+    zoomMaxBtn.addEventListener('click', zoomToMax);
 
-    zoomInBtn.disabled = false;
-    zoomOutBtn.disabled = false;
+    setZoomButtonStates();
 
     window.addEventListener('popstate', handlePopState);
 

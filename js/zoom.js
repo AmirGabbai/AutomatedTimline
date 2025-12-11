@@ -3,6 +3,18 @@
 const maxZoomIn = 200;
 const maxZoomOut = 28;
 
+function setZoomButtonStates() {
+    if (!zoomInBtn || !zoomOutBtn || !zoomMinBtn || !zoomMaxBtn) return;
+
+    const atMax = yearWidth >= maxZoomIn;
+    const atMin = yearWidth <= maxZoomOut;
+
+    zoomInBtn.disabled = atMax;
+    zoomMaxBtn.disabled = atMax;
+    zoomOutBtn.disabled = atMin;
+    zoomMinBtn.disabled = atMin;
+}
+
 function updateZoom(newYearWidth, options = {}) {
     const scrollable = getTimelineScrollable();
     const anchor = options.anchor || null;
@@ -58,8 +70,7 @@ function updateZoom(newYearWidth, options = {}) {
         }
     }, 0);
 
-    zoomInBtn.disabled = yearWidth >= maxZoomIn;
-    zoomOutBtn.disabled = yearWidth <= maxZoomOut;
+    setZoomButtonStates();
 }
 
 function zoomIn() {
@@ -70,6 +81,14 @@ function zoomIn() {
 function zoomOut() {
     const newWidth = Math.max(yearWidth - 20, maxZoomOut);
     updateZoom(newWidth);
+}
+
+function zoomToMax() {
+    updateZoom(maxZoomIn);
+}
+
+function zoomToMin() {
+    updateZoom(maxZoomOut);
 }
 
 // Enable pinch/trackpad zooming on the timeline scroll area.
