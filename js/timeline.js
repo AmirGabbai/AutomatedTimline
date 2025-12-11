@@ -1,9 +1,31 @@
+// Cache base positions so we don't compound offsets after each render.
+let cachedBaseLayoutMetrics = null;
+
 // Timeline rendering: width calculations, labels, and event blocks.
 
 function getTimelineWidth() {
     if (minYear === null || maxYear === null) return 0;
     const yearRange = maxYear - minYear + 1;
     return yearRange * yearWidth;
+}
+
+function getBaseLayoutMetrics() {
+    if (cachedBaseLayoutMetrics) {
+        return cachedBaseLayoutMetrics;
+    }
+
+    const scrollable = getTimelineScrollable();
+    const timelineLine = scrollable?.querySelector('.timeline-line');
+    const timelineBottomBar = document.querySelector('.timeline-bottom-bar');
+
+    cachedBaseLayoutMetrics = {
+        lineTop: timelineLine ? parseFloat(getComputedStyle(timelineLine).top) : 0,
+        reflectionTop: reflectionLayer ? parseFloat(getComputedStyle(reflectionLayer).top) : 0,
+        yearsTop: yearsLayer ? parseFloat(getComputedStyle(yearsLayer).top) : 0,
+        bottomBarBottom: timelineBottomBar ? parseFloat(getComputedStyle(timelineBottomBar).bottom) : 0
+    };
+
+    return cachedBaseLayoutMetrics;
 }
 
 function getTimelineScrollable() {
@@ -179,7 +201,7 @@ function renderEvents() {
     });
 
     const layerCount = 9;
-    const layerSpacing = 75;
+    const layerSpacing = 72;
     const eventsLayerHeight = (eventsLayer?.clientHeight || eventsLayer?.offsetHeight || 800);
     const eventHeight = 30;
     const laneOccupancy = Array.from({ length: layerCount }, () => []);
@@ -326,8 +348,9 @@ function renderEvents() {
     activeLayersCount = laneOccupancy.filter(lane => lane.length > 0).length;
 
     const unusedLayers = layerCount - activeLayersCount;
-    const maxPushUpOffset = 160;
-    const pushUpOffset = Math.min(unusedLayers * layerSpacing, maxPushUpOffset);
+    const maxPushUpOffset = 100;
+    const pushUpScale = 0.3; // keep the timeline lower on smaller screens
+    const pushUpOffset = Math.min(unusedLayers * layerSpacing, maxPushUpOffset) * pushUpScale;
 
     const allEventElements = eventsLayer.querySelectorAll('.event:not(.fade-out)');
     allEventElements.forEach(eventDiv => {
@@ -351,10 +374,13 @@ function renderEvents() {
     const timelineLine = scrollable.querySelector('.timeline-line');
     const timelineBottomBar = document.querySelector('.timeline-bottom-bar');
 
-    const baseTimelineLineTop = 780;
-    const baseReflectionLayerTop = 786;
-    const baseYearsLayerTop = 790;
-    const baseBottomBarBottom = 0;
+    const {
+        lineTop: baseTimelineLineTop,
+        reflectionTop: baseReflectionLayerTop,
+        yearsTop: baseYearsLayerTop,
+        bottomBarBottom: baseBottomBarBottom
+    } = getBaseLayoutMetrics();
+
     const bottomBarExtraGap = 50;
 
     if (timelineLine) {
