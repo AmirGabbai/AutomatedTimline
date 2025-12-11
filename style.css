@@ -231,7 +231,14 @@ body {
     text-transform: capitalize;
     border-radius: 5px;
     overflow: hidden; /* needed for texture overlay */
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+    /* Layered glow to make text stand out more */
+    text-shadow:
+        0 0 12px rgba(0, 0, 0, 0.85),
+        0 0 18px rgba(0, 0, 0, 0.85),
+        0 0 32px rgba(0, 0, 0, 0.9);
+    /* Stroke keeps letters readable even when overflow clips shadow */
+    -webkit-text-stroke: 1px rgba(0, 0, 0, 0.7);
+    paint-order: stroke fill;
 }
 
 .category-btn::before {
@@ -500,6 +507,8 @@ body {
     white-space: nowrap;
     opacity: 1;
     isolation: isolate; /* keep texture behind text */
+        /* Layered glow to make text stand out more */
+
 }
 
 .event::before {
@@ -661,7 +670,9 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+    text-shadow:
+        0 2px 6px rgba(0, 0, 0, 0.55),
+        0 0 2px rgba(0, 0, 0, 0.8);
 }
 
 .video-icon {
