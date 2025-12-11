@@ -32,6 +32,9 @@ function showEventModal(event) {
     const modalDescriptions = document.getElementById('modalDescriptions');
     const modalLinks = document.getElementById('modalLinks');
 
+    // Make sure any previously embedded players are fully stopped before rendering a new event.
+    clearModalVideos(modalVideos);
+
     modalTitle.textContent = event.title;
 
     const youtubeLinks = event.links ? event.links.filter(link => isYouTubeLink(link)) : [];
@@ -62,7 +65,8 @@ function showEventModal(event) {
                 const videoContainer = document.createElement('div');
                 videoContainer.className = 'modal-video';
                 const iframe = document.createElement('iframe');
-                iframe.src = `https://www.youtube.com/embed/${videoId}`;
+                // enablejsapi allows us to send a stop command on close
+                iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&rel=0`;
                 iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
                 iframe.allowFullscreen = true;
                 videoContainer.appendChild(iframe);
@@ -150,7 +154,34 @@ function showNextEvent() {
 
 function closeEventModal() {
     const modal = document.getElementById('eventModal');
+    const modalVideos = document.getElementById('modalVideos');
+
+    clearModalVideos(modalVideos);
+
     modal.classList.remove('active');
     document.body.style.overflow = '';
+}
+
+// Stop and remove any YouTube iframes within the modal.
+function clearModalVideos(container) {
+    if (!container) return;
+
+    const iframes = container.querySelectorAll('iframe');
+    iframes.forEach((iframe) => {
+        // Try to pause nicely via the YouTube iframe API.
+        try {
+            iframe.contentWindow?.postMessage('{"event":"command","func":"stopVideo","args":""}', '*');
+        } catch (e) {
+            /* no-op */
+        }
+
+        // Brutal fallback: blank the src before removing to force playback teardown.
+        iframe.src = '';
+        iframe.remove();
+    });
+
+    // Replace children to guarantee nothing continues playing in the background.
+    container.innerHTML = '';
+    container.style.display = 'none';
 }
 
