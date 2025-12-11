@@ -147,6 +147,29 @@ body {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     text-transform: capitalize;
     border-radius: 5px;
+    overflow: hidden; /* needed for texture overlay */
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+.category-btn::before {
+    content: "";
+    position: absolute;
+    inset: -35%;
+    background-image:
+        repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0 7px, transparent 7px 14px),
+        repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.18) 0 3px, transparent 3px 10px),
+        radial-gradient(circle at 30% 40%, rgba(255, 255, 255, 0.15), transparent 38%),
+        radial-gradient(circle at 70% 65%, rgba(0, 0, 0, 0.12), transparent 32%);
+    background-size: 28px 28px, 18px 18px, 140% 140%, 140% 140%;
+    mix-blend-mode: overlay;
+    opacity: 0.48;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.3s ease;
+}
+
+.category-btn:hover::before {
+    opacity: 0.75;
+    transform: scale(1.05);
 }
 
 .category-btn:hover {
@@ -392,6 +415,24 @@ body {
     text-overflow: ellipsis;
     white-space: nowrap;
     opacity: 1;
+    isolation: isolate; /* keep texture behind text */
+}
+
+.event::before {
+    content: "";
+    position: absolute;
+    inset: -30%;
+    background-image:
+        repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0 7px, transparent 7px 14px),
+        repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.18) 0 3px, transparent 3px 10px),
+        radial-gradient(circle at 30% 40%, rgba(255, 255, 255, 0.15), transparent 38%),
+        radial-gradient(circle at 70% 65%, rgba(0, 0, 0, 0.12), transparent 32%);
+    background-size: 28px 28px, 18px 18px, 140% 140%, 140% 140%;
+    mix-blend-mode: overlay;
+    opacity: 0.45;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.3s ease;
+    z-index: 0;
 }
 
 /* Fade in animation for new events */
@@ -536,6 +577,7 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
 }
 
 .video-icon {
