@@ -75,7 +75,9 @@ function zoomOut() {
 // Enable pinch/trackpad zooming on the timeline scroll area.
 function setupWheelZoom() {
     const scrollable = getTimelineScrollable();
-    if (!scrollable) return;
+    // Restrict wheel/pinch zoom to the events layer so it only triggers while hovering timeline content.
+    const zoomSurface = eventsLayer;
+    if (!scrollable || !zoomSurface) return;
 
     let wheelFramePending = false;
     let pendingZoomWidth = yearWidth;
@@ -122,6 +124,6 @@ function setupWheelZoom() {
         }, 180);
     };
 
-    scrollable.addEventListener('wheel', handleWheel, { passive: false });
+    zoomSurface.addEventListener('wheel', handleWheel, { passive: false });
 }
 

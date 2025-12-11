@@ -12,7 +12,9 @@ function getTimelineScrollable() {
 
 function setupTimelineDrag() {
     const scrollable = getTimelineScrollable();
-    if (!scrollable) return;
+    // Use the events layer as the drag surface so dragging only happens over the timeline content
+    const dragSurface = eventsLayer;
+    if (!scrollable || !dragSurface) return;
 
     const startDrag = (event) => {
         if (event.button !== 0) return;
@@ -37,10 +39,10 @@ function setupTimelineDrag() {
         scrollable.classList.remove('dragging');
     };
 
-    scrollable.addEventListener('mousedown', startDrag);
+    dragSurface.addEventListener('mousedown', startDrag);
     window.addEventListener('mousemove', handleDrag);
     window.addEventListener('mouseup', endDrag);
-    scrollable.addEventListener('mouseleave', endDrag);
+    dragSurface.addEventListener('mouseleave', endDrag);
 }
 
 function renderTimeline(scrollToEnd = false, centerYear = null) {
@@ -177,9 +179,9 @@ function renderEvents() {
     });
 
     const layerCount = 9;
-    const layerSpacing = 80;
-    const eventsLayerHeight = (eventsLayer?.clientHeight || eventsLayer?.offsetHeight || 760);
-    const eventHeight = 40;
+    const layerSpacing = 75;
+    const eventsLayerHeight = (eventsLayer?.clientHeight || eventsLayer?.offsetHeight || 800);
+    const eventHeight = 30;
     const laneOccupancy = Array.from({ length: layerCount }, () => []);
 
     visibleEventMap.forEach((event, eventIndex) => {
@@ -353,7 +355,7 @@ function renderEvents() {
     const baseReflectionLayerTop = 786;
     const baseYearsLayerTop = 790;
     const baseBottomBarBottom = 0;
-    const bottomBarExtraGap = 30;
+    const bottomBarExtraGap = 50;
 
     if (timelineLine) {
         timelineLine.style.top = `${baseTimelineLineTop - pushUpOffset}px`;
