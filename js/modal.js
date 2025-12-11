@@ -24,6 +24,7 @@ function showEventModal(event) {
 
     updateNavigationButtons();
     const modal = document.getElementById('eventModal');
+    const modalContent = document.querySelector('.modal-content');
     const modalTitle = document.getElementById('modalTitle');
     const modalVideoIcon = document.getElementById('modalVideoIcon-black');
     const modalCategories = document.getElementById('modalCategories');
@@ -56,6 +57,27 @@ function showEventModal(event) {
             modalCategories.appendChild(circle);
         });
     }
+
+    // Build a dynamic accent gradient based on the event's categories.
+    const categoryList = [];
+    if (Array.isArray(event.categories)) {
+        categoryList.push(...event.categories);
+    }
+    if (event.descriptions && typeof event.descriptions === 'object') {
+        categoryList.push(...Object.keys(event.descriptions));
+    }
+    const uniqueCategories = Array.from(new Set(categoryList));
+    const gradientColors = uniqueCategories
+        .map(cat => categoryColors[cat])
+        .filter(Boolean);
+    const fallbackColor = defaultColor || '#6c757d';
+    const colorsForGradient = gradientColors.length > 0 ? gradientColors : [fallbackColor];
+    const stops =
+        colorsForGradient.length === 1
+            ? `${colorsForGradient[0]}, ${colorsForGradient[0]}`
+            : colorsForGradient.join(', ');
+    const accentGradient = `linear-gradient(90deg, ${stops})`;
+    modalContent?.style.setProperty('--modal-accent-gradient', accentGradient);
 
     modalVideos.innerHTML = '';
     if (youtubeLinks.length > 0) {
