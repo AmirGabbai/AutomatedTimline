@@ -67,8 +67,12 @@ function renderCategoryButtons() {
     uniqueCategories.forEach(category => {
         const button = document.createElement('button');
         button.className = 'category-btn';
-        button.textContent = category;
         button.setAttribute('data-category', category);
+        
+        // Wrap text in span to unskew it
+        const textSpan = document.createElement('span');
+        textSpan.textContent = category;
+        button.appendChild(textSpan);
 
         const categoryColor = categoryColors[category] || defaultColor;
         button.style.backgroundColor = categoryColor;

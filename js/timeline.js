@@ -118,29 +118,7 @@ function getYearLabelInterval() {
 }
 
 function getEventColor(event) {
-    if (!event.categories || event.categories.length === 0) {
-        return defaultColor;
-    }
-
-    if (event.categories.length === 1) {
-        const category = event.categories[0];
-        return categoryColors[category] || defaultColor;
-    }
-
-    const colors = event.categories
-        .map(cat => categoryColors[cat] || defaultColor)
-        .filter((color, index, self) => self.indexOf(color) === index);
-
-    if (colors.length === 1) {
-        return colors[0];
-    }
-
-    const gradientStops = colors.map((color, index) => {
-        const percentage = (index / (colors.length - 1)) * 100;
-        return `${color} ${percentage}%`;
-    }).join(', ');
-
-    return `linear-gradient(135deg, ${gradientStops})`;
+    return '#464646';
 }
 
 function renderEvents() {

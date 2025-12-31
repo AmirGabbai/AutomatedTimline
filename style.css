@@ -8,7 +8,6 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f5f5f5;
-    background-image: radial-gradient(circle, rgba(0, 0, 0, 0.1) 1px, transparent 2px);
     background-size: 20px 20px;
     display: flex;
     flex-direction: column;
@@ -21,8 +20,9 @@ body {
 .brand-sticker {
     position: fixed;
     top: 16px;
-    right: 16px;
-    width: 140px;
+    left: 50%;
+    transform: translateX(-50%) translateZ(0);
+    width: 120px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -35,7 +35,6 @@ body {
     will-change: transform;
     z-index: 1200;
     backdrop-filter: blur(3px);
-    transform: translateZ(0);
     backface-visibility: hidden;
     transform-origin: center;
 }
@@ -52,12 +51,12 @@ body {
 
 .brand-sticker:hover {
     /* Keep rotation subtle to avoid blur artifacts */
-    transform: translate3d(0, 2px, 0) scale(1.02) rotate(3deg);
+    transform: translateX(-50%) translate3d(0, 2px, 0) scale(1.02) rotate(3deg);
     box-shadow: 0 10px 26px rgba(15, 23, 42, 0.22);
 }
 
 .brand-sticker:active {
-    transform: translateY(0);
+    transform: translateX(-50%) translateY(0);
 }
 
 .watermark-logos {
@@ -85,9 +84,10 @@ body {
 
 @media (max-width: 768px) {
     .brand-sticker {
-        width: 120px;
+        width: 85px;
         top: 10px;
-        right: 10px;
+        left: 50%;
+        transform: translateX(-50%) translateZ(0);
         padding: 6px 10px;
     }
     .watermark-logos {
@@ -109,8 +109,8 @@ body {
 .zoom-control-group {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 8px;
+    gap: 4px;
+    padding: 5px;
     background: rgba(255, 255, 255, 0.9);
     border: 1px solid #d1d5db;
     border-radius: 999px;
@@ -123,8 +123,8 @@ body {
 }
 
 .zoom-btn {
-    width: 46px;
-    height: 46px;
+    width: 36px;
+    height: 36px;
     padding: 0;
     border-radius: 50%;
     border: 1px solid #cbd5e1;
@@ -158,12 +158,12 @@ body {
 }
 
 .zoom-icon {
-    width: 22px;
-    height: 22px;
+    width: 18px;
+    height: 18px;
     display: block;
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 22px 22px;
+    background-size: 18px 18px;
 }
 
 .zoom-in-icon {
@@ -194,7 +194,7 @@ body {
 /* Categories Menu */
 .categories-menu {
     position: fixed;
-    top: 30px;
+    top: 100px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -204,72 +204,47 @@ body {
     align-items: center;
     z-index: 1000;
     padding: 10px 20px;
-    background-color: rgba(255, 255, 255, 0.95);
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: transparent;
     max-width: 90%;
 }
 
-/* Category Button - Triangle Shape */
+/* Category Button - Parallelogram Shape */
 .category-btn {
     position: relative;
-    width: 120px;
-    height: 50px;
+    width: 140px;
+    height: 33px;
     background-color: #4a90e2;
     border: none;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
+    color: #000000;
     font-weight: 600;
     font-size: 18px;
     text-align: center;
-    padding: 0 15px 0 10px;
+    padding: 0 20px;
     transition: all 0.3s ease;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     text-transform: capitalize;
-    border-radius: 5px;
-    overflow: hidden; /* needed for texture overlay */
-    /* Layered glow to make text stand out more */
-    text-shadow:
-        0 0 12px rgba(0, 0, 0, 0.85),
-        0 0 18px rgba(0, 0, 0, 0.85),
-        0 0 32px rgba(0, 0, 0, 0.9);
-    /* Stroke keeps letters readable even when overflow clips shadow */
-    -webkit-text-stroke: 1px rgba(0, 0, 0, 0.7);
-    paint-order: stroke fill;
+    /* Parallelogram shape - skew the button */
+    transform: skewX(-15deg);
+    overflow: visible;
 }
 
-.category-btn::before {
-    content: "";
-    position: absolute;
-    inset: -35%;
-    background-image:
-        repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0 7px, transparent 7px 14px),
-        repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.18) 0 3px, transparent 3px 10px),
-        radial-gradient(circle at 30% 40%, rgba(255, 255, 255, 0.15), transparent 38%),
-        radial-gradient(circle at 70% 65%, rgba(0, 0, 0, 0.12), transparent 32%);
-    background-size: 28px 28px, 18px 18px, 140% 140%, 140% 140%;
-    mix-blend-mode: overlay;
-    opacity: 0.48;
-    pointer-events: none;
-    transition: opacity 0.2s ease, transform 0.3s ease;
-}
-
-.category-btn:hover::before {
-    opacity: 0.75;
-    transform: scale(1.05);
+/* Unskew the text inside the button */
+.category-btn span {
+    display: inline-block;
+    transform: skewX(15deg);
 }
 
 .category-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    filter: brightness(1.1);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+    filter: brightness(1.05);
 }
 
 .category-btn:active {
-    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 /* Hidden state - make button semi-transparent */
@@ -287,7 +262,8 @@ body {
 .timeline-container {
     position: relative;
     width: 100%;
-    height: 900px;
+    margin-top: 40px;
+    height: 850px;
     cursor: default; /* Avoid showing drag cursor on the wrapper */
 }
 
@@ -296,13 +272,13 @@ body {
     left: 50%;
     transform: translateX(-50%);
     bottom: clamp(12px, 2vw, 24px);
-    width: 75vw;
+    width: 65vw;
     display: flex;
     align-items: center;
-    gap: clamp(12px, 2vw, 24px);
+    gap: clamp(8px, 1.5vw, 16px);
     z-index: 1000;
-    padding: 10px 14px;
-    border-radius: 12px;
+    padding: 6px 10px;
+    border-radius: 10px;
     background: rgba(255, 255, 255, 0.92);
     box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
     backdrop-filter: blur(4px);
@@ -311,8 +287,8 @@ body {
 @media (max-width: 768px) {
     .timeline-bottom-bar {
         width: calc(100% - 20px);
-        padding: 10px 12px;
-        gap: 12px;
+        padding: 6px 10px;
+        gap: 10px;
         flex-direction: column;
         align-items: stretch;
     }
@@ -321,10 +297,10 @@ body {
 .timeline-minimap {
     position: relative;
     flex: 1;
-    height: 90px;
+    height: 70px;
     margin: 0;
     border: 1px solid #d8d8d8;
-    border-radius: 10px;
+    border-radius: 8px;
     background: rgba(255, 255, 255, 0.9);
     overflow: hidden;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
@@ -486,10 +462,9 @@ body {
 /* Individual Event Styling */
 .event {
     position: absolute;
-    height: 45px;
+    height: 25px;
     margin-left: 5px;
-    /* background color is set dynamically via JavaScript based on categories */
-    border-radius: 12px;
+    background-color: #464646 !important; /* Dark charcoal grey - override JS inline style */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -499,6 +474,7 @@ body {
     font-weight: bold;
     text-align: center;
     padding: 5px 12px;
+    padding-left: 20px; /* Extra padding on left for angled edge */
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
     cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.4s ease;
@@ -507,26 +483,11 @@ body {
     white-space: nowrap;
     opacity: 1;
     isolation: isolate; /* keep texture behind text */
-        /* Layered glow to make text stand out more */
-
+    /* Angled left edge - parallelogram shape */
+    clip-path: polygon(15px 0, 100% 0, 100% 100%, 0 100%);
 }
 
-.event::before {
-    content: "";
-    position: absolute;
-    inset: -30%;
-    background-image:
-        repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0 7px, transparent 7px 14px),
-        repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.18) 0 3px, transparent 3px 10px),
-        radial-gradient(circle at 30% 40%, rgba(255, 255, 255, 0.15), transparent 38%),
-        radial-gradient(circle at 70% 65%, rgba(0, 0, 0, 0.12), transparent 32%);
-    background-size: 28px 28px, 18px 18px, 140% 140%, 140% 140%;
-    mix-blend-mode: overlay;
-    opacity: 0.45;
-    pointer-events: none;
-    transition: opacity 0.2s ease, transform 0.3s ease;
-    z-index: 0;
-}
+
 
 /* Fade in animation for new events */
 .event.fade-in {
@@ -661,18 +622,33 @@ body {
     gap: 6px;
     width: 100%;
     text-align: center;
-    overflow: hidden;
+    overflow: visible; /* Allow dot to show */
 }
 
 .event-title-text {
     flex: 0 0 auto;
     display: inline-block;
-    overflow: hidden;
+    overflow: visible;
     text-overflow: ellipsis;
     white-space: nowrap;
     text-shadow:
         0 2px 6px rgba(0, 0, 0, 0.55),
         0 0 2px rgba(0, 0, 0, 0.8);
+    position: relative;
+    padding-right: 10px; /* Space for the dot */
+}
+
+.event-title-text::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-60%); /* Slightly elevated above center */
+    width: 6px;
+    height: 6px;
+    background-color: #8B4513; /* Reddish-brown color */
+    border-radius: 50%;
+    display: inline-block;
 }
 
 .video-icon {
@@ -723,7 +699,7 @@ body {
 /* Reflection Block - shows the event's gradient with reduced opacity */
 .reflection-block {
     position: absolute;
-    height: 45px;
+    height: 35px;
     margin-left: 5px;
     opacity: 0.5;
     transition: opacity 0.3s ease;
@@ -748,7 +724,6 @@ body {
 /* Individual Year Label */
 .year-label {
     position: absolute;
-    top: 10px;
     text-align: center;
     font-size: 16px;
     font-weight: 600;
