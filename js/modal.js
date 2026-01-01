@@ -24,7 +24,8 @@ function showEventModal(event) {
 
     updateNavigationButtons();
     const modal = document.getElementById('eventModal');
-    const modalContent = document.querySelector('.modal-content');
+    const modalContent = modal.querySelector('.modal-content');
+    const modalHero = document.getElementById('modalHero');
     const modalTitle = document.getElementById('modalTitle');
     const modalVideoIcon = document.getElementById('modalVideoIcon-black');
     const modalCategories = document.getElementById('modalCategories');
@@ -35,6 +36,40 @@ function showEventModal(event) {
 
     // Make sure any previously embedded players are fully stopped before rendering a new event.
     clearModalVideos(modalVideos);
+
+    // Determine if this event has YouTube videos
+    const youtubeLinksForSize = event.links ? event.links.filter(link => isYouTubeLink(link)) : [];
+    const hasVideos = youtubeLinksForSize.length > 0;
+    
+    // Apply the appropriate size class
+    modalContent.classList.remove('modal-with-video', 'modal-without-video');
+    modalContent.classList.add(hasVideos ? 'modal-with-video' : 'modal-without-video');
+
+    // Set hero image if available, otherwise use a gradient based on categories
+    if (event.image) {
+        modalHero.style.backgroundImage = `url('${event.image}')`;
+    } else {
+        // Create a gradient from category colors
+        const categoryList = [];
+        if (Array.isArray(event.categories)) {
+            categoryList.push(...event.categories);
+        }
+        if (event.descriptions && typeof event.descriptions === 'object') {
+            categoryList.push(...Object.keys(event.descriptions));
+        }
+        const uniqueCategories = Array.from(new Set(categoryList));
+        const gradientColors = uniqueCategories
+            .map(cat => categoryColors[cat])
+            .filter(Boolean);
+        
+        if (gradientColors.length >= 2) {
+            modalHero.style.backgroundImage = `linear-gradient(135deg, ${gradientColors[0]}40 0%, ${gradientColors[1]}40 100%)`;
+        } else if (gradientColors.length === 1) {
+            modalHero.style.backgroundImage = `linear-gradient(135deg, ${gradientColors[0]}40 0%, ${gradientColors[0]}20 100%)`;
+        } else {
+            modalHero.style.backgroundImage = 'linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%)';
+        }
+    }
 
     modalTitle.textContent = event.title;
 
@@ -48,36 +83,22 @@ function showEventModal(event) {
     }
 
     modalCategories.innerHTML = '';
+    // Collect all categories from both categories array and descriptions
+    const allCategories = [];
     if (event.categories && event.categories.length > 0) {
-        event.categories.forEach(category => {
-            const circle = document.createElement('span');
-            circle.className = 'modal-category-circle';
-            const categoryColor = categoryColors[category] || defaultColor;
-            circle.style.backgroundColor = categoryColor;
-            modalCategories.appendChild(circle);
-        });
-    }
-
-    // Build a dynamic accent gradient based on the event's categories.
-    const categoryList = [];
-    if (Array.isArray(event.categories)) {
-        categoryList.push(...event.categories);
+        allCategories.push(...event.categories);
     }
     if (event.descriptions && typeof event.descriptions === 'object') {
-        categoryList.push(...Object.keys(event.descriptions));
+        allCategories.push(...Object.keys(event.descriptions));
     }
-    const uniqueCategories = Array.from(new Set(categoryList));
-    const gradientColors = uniqueCategories
-        .map(cat => categoryColors[cat])
-        .filter(Boolean);
-    const fallbackColor = defaultColor || '#6c757d';
-    const colorsForGradient = gradientColors.length > 0 ? gradientColors : [fallbackColor];
-    const stops =
-        colorsForGradient.length === 1
-            ? `${colorsForGradient[0]}, ${colorsForGradient[0]}`
-            : colorsForGradient.join(', ');
-    const accentGradient = `linear-gradient(90deg, ${stops})`;
-    modalContent?.style.setProperty('--modal-accent-gradient', accentGradient);
+    const uniqueCats = Array.from(new Set(allCategories));
+    uniqueCats.forEach(category => {
+        const circle = document.createElement('span');
+        circle.className = 'modal-category-circle';
+        const categoryColor = categoryColors[category] || defaultColor;
+        circle.style.backgroundColor = categoryColor;
+        modalCategories.appendChild(circle);
+    });
 
     modalVideos.innerHTML = '';
     if (youtubeLinks.length > 0) {
@@ -109,8 +130,11 @@ function showEventModal(event) {
             const categoryName = document.createElement('div');
             categoryName.className = 'modal-description-category';
             const categoryColor = categoryColors[category] || defaultColor;
-            categoryName.style.color = categoryColor;
-            categoryName.textContent = category;
+            categoryName.style.backgroundColor = categoryColor;
+            // Wrap text in span for unskew effect (parallelogram shape)
+            const categorySpan = document.createElement('span');
+            categorySpan.textContent = category;
+            categoryName.appendChild(categorySpan);
 
             const descriptionText = document.createElement('div');
             descriptionText.className = 'modal-description-text';
@@ -133,10 +157,10 @@ function showEventModal(event) {
             linkElement.href = link;
             linkElement.target = '_blank';
             linkElement.rel = 'noopener noreferrer';
-            linkElement.textContent = `${index + 1}. ${link}`;
+            linkElement.textContent = link;
             modalLinks.appendChild(linkElement);
         });
-        modalLinksSection.style.display = 'block';
+        modalLinksSection.style.display = 'flex';
         modalFooter.classList.remove('no-links');
     } else {
         modalLinksSection.style.display = 'none';

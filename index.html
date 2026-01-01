@@ -56,39 +56,42 @@
     <!-- Event Modal Popup -->
     <div id="eventModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title-section">
-                    <button class="modal-close-btn" id="modalCloseBtn" aria-label="Close modal">&times;</button>
-                </div>
-                <div class="modal-header-right">
+            <!-- Hero Image Section -->
+            <div class="modal-hero" id="modalHero">
+                <button class="modal-close-btn" id="modalCloseBtn" aria-label="Close modal">&times;</button>
+            </div>
+            
+            <!-- Modal Inner Content -->
+            <div class="modal-inner">
+                <div class="modal-header">
                     <div class="modal-years-categories">
-                        <div class="modal-years" id="modalYears"></div>
                         <div class="modal-categories" id="modalCategories"></div>
+
+                        <div class="modal-years" id="modalYears"></div>
                     </div>
                     <div class="modal-title-wrapper">
-                        <img class="modal-video-icon" id="modalVideoIcon-black" src="static/icons/video-icon-black.svg" alt="Video-Icon" style="display: none;">
                         <h2 class="modal-title" id="modalTitle"></h2>
+                        <img class="modal-video-icon" id="modalVideoIcon-black" src="static/icons/video-icon-black.svg" alt="Video-Icon" style="display: none;">
+
                     </div>
                 </div>
-            </div>
-            <div class="modal-body">
-                <div class="modal-videos" id="modalVideos"></div>
-                <div class="modal-descriptions" id="modalDescriptions"></div>
-            </div>
-            <div class="modal-footer">
-                <div class="modal-links-section">
-                    <div class="modal-links-title">לקריאה נוספת</div>
-                    <div class="modal-links" id="modalLinks"></div>
+                <div class="modal-body">
+                    <div class="modal-videos" id="modalVideos"></div>
+                    <div class="modal-descriptions" id="modalDescriptions"></div>
                 </div>
-                <div class="modal-navigation">
-                    <button id="nextEventBtn" class="modal-nav-btn">
-                        <img src="static/icons/right-arrow-icon-black.svg" alt="" aria-hidden="true" class="modal-nav-icon">
-                        <span>אירוע הבא</span>
-                    </button>
-                    <button id="prevEventBtn" class="modal-nav-btn">
-                        <span>אירוע קודם</span>
-                        <img src="static/icons/left-arrow-icon-black.svg" alt="" aria-hidden="true" class="modal-nav-icon">
-                    </button>
+                <div class="modal-footer">
+                    <div class="modal-links-section">
+                        <div class="modal-links-title">לקריאה נוספת</div>
+                        <div class="modal-links" id="modalLinks"></div>
+                    </div>
+                    <div class="modal-navigation">
+                        <button id="nextEventBtn" class="modal-nav-btn">
+                            <span>לאירוע הבא</span>
+                        </button>
+                        <button id="prevEventBtn" class="modal-nav-btn">
+                            <span>לאירוע הקודם</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
