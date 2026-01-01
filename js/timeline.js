@@ -195,11 +195,10 @@ function renderEvents() {
             titleText.textContent = event.title;
             eventTitle.appendChild(titleText);
 
-            if (event.links && event.links.some(link => isYouTubeLink(link))) {
-                const firstYoutubeLink = event.links.find(link => isYouTubeLink(link));
+            if (event.video_url && event.video_url.trim() !== '') {
                 const videoLink = document.createElement('a');
                 videoLink.className = 'video-icon';
-                videoLink.href = firstYoutubeLink;
+                videoLink.href = event.video_url;
                 videoLink.target = '_blank';
                 videoLink.rel = 'noopener noreferrer';
                 videoLink.setAttribute('aria-label', `Watch video about ${event.title}`);

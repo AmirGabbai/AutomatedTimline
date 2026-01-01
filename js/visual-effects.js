@@ -54,7 +54,7 @@ function buildTooltipHTML(event) {
 
     const descriptionPreview = buildTooltipDescription(event);
 
-    const hasVideo = event.links && event.links.some(link => isYouTubeLink(link));
+    const hasVideo = event.video_url && event.video_url.trim() !== '';
     const videoIconHTML = hasVideo
         ? `<img class="tooltip-video-icon" src="static/icons/video-icon-black.svg" alt="Video">`
         : '';

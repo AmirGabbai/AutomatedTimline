@@ -121,9 +121,8 @@ function showEventModal(event) {
     // Make sure any previously embedded players are fully stopped before rendering a new event.
     clearModalVideos(modalVideos);
 
-    // Determine if this event has YouTube videos
-    const youtubeLinksForSize = event.links ? event.links.filter(link => isYouTubeLink(link)) : [];
-    const hasVideos = youtubeLinksForSize.length > 0;
+    // Determine if this event has a video_url
+    const hasVideos = event.video_url && event.video_url.trim() !== '';
     
     // Apply the appropriate size class
     modalContent.classList.remove('modal-with-video', 'modal-without-video');
@@ -157,8 +156,8 @@ function showEventModal(event) {
 
     modalTitle.textContent = event.title;
 
-    const youtubeLinks = event.links ? event.links.filter(link => isYouTubeLink(link)) : [];
-    modalVideoIcon.style.display = youtubeLinks.length > 0 ? 'inline' : 'none';
+    // Show video icon only if video_url is present
+    modalVideoIcon.style.display = hasVideos ? 'inline' : 'none';
 
     if (event.start_year === event.end_year) {
         modalYears.textContent = event.start_year.toString();
@@ -185,21 +184,19 @@ function showEventModal(event) {
     });
 
     modalVideos.innerHTML = '';
-    if (youtubeLinks.length > 0) {
-        youtubeLinks.forEach(link => {
-            const videoId = extractYouTubeId(link);
-            if (videoId) {
-                const videoContainer = document.createElement('div');
-                videoContainer.className = 'modal-video';
-                const iframe = document.createElement('iframe');
-                // enablejsapi allows us to send a stop command on close
-                iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&rel=0`;
-                iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-                iframe.allowFullscreen = true;
-                videoContainer.appendChild(iframe);
-                modalVideos.appendChild(videoContainer);
-            }
-        });
+    if (hasVideos) {
+        const videoId = extractYouTubeId(event.video_url);
+        if (videoId) {
+            const videoContainer = document.createElement('div');
+            videoContainer.className = 'modal-video';
+            const iframe = document.createElement('iframe');
+            // enablejsapi allows us to send a stop command on close
+            iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&rel=0`;
+            iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+            iframe.allowFullscreen = true;
+            videoContainer.appendChild(iframe);
+            modalVideos.appendChild(videoContainer);
+        }
         modalVideos.style.display = 'flex';
     } else {
         modalVideos.style.display = 'none';
@@ -233,9 +230,9 @@ function showEventModal(event) {
     const modalLinksSection = document.querySelector('.modal-links-section');
     const modalFooter = document.querySelector('.modal-footer');
     modalLinks.innerHTML = '';
-    const nonYouTubeLinks = event.links ? event.links.filter(link => !isYouTubeLink(link)) : [];
-    if (nonYouTubeLinks.length > 0) {
-        nonYouTubeLinks.forEach((link, index) => {
+    const allLinks = event.links || [];
+    if (allLinks.length > 0) {
+        allLinks.forEach((link, index) => {
             const linkElement = document.createElement('a');
             linkElement.className = 'modal-link';
             linkElement.href = link;
