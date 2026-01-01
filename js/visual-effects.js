@@ -84,6 +84,15 @@ function showEventTooltip(eventData, targetElement, followCursor = false, cursor
     eventTooltip.classList.toggle('below', tooltipPlacement === 'below');
 
     eventTooltip.innerHTML = buildTooltipHTML(eventData);
+    
+    // Set image on tooltip hero if available
+    const tooltipHero = eventTooltip.querySelector('.tooltip-hero');
+    if (tooltipHero && eventData.image_url && eventData.image_url.trim() !== '') {
+        tooltipHero.style.backgroundImage = `url('${eventData.image_url}')`;
+        tooltipHero.style.backgroundSize = 'cover';
+        tooltipHero.style.backgroundPosition = 'center';
+    }
+    
     updateTooltipPosition(targetElement, cursorEvent);
     eventTooltip.classList.add('visible');
 }

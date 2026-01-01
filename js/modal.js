@@ -129,8 +129,10 @@ function showEventModal(event) {
     modalContent.classList.add(hasVideos ? 'modal-with-video' : 'modal-without-video');
 
     // Set hero image if available, otherwise use a gradient based on categories
-    if (event.image) {
-        modalHero.style.backgroundImage = `url('${event.image}')`;
+    if (event.image_url && event.image_url.trim() !== '') {
+        modalHero.style.backgroundImage = `url('${event.image_url}')`;
+        modalHero.style.backgroundSize = 'cover';
+        modalHero.style.backgroundPosition = 'center';
     } else {
         // Create a gradient from category colors
         const categoryList = [];
