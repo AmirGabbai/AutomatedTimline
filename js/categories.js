@@ -19,9 +19,17 @@ function deriveCategoriesFromDescriptions(event) {
         .filter(key => typeof key === 'string' && key.trim().length > 0);
 }
 
+// Custom category order for the menu
+const categoryOrder = [
+    'מאבק בגזענות',
+    'גזענות במדיניות',
+    'גזענות בתרבות'
+
+];
+
 /**
  * Extracts all unique categories from the events array.
- * @returns {Array<string>} Array of unique category names.
+ * @returns {Array<string>} Array of unique category names in custom order.
  */
 function extractCategories() {
     const categoriesSet = new Set();
@@ -34,7 +42,25 @@ function extractCategories() {
             });
         }
     });
-    return Array.from(categoriesSet).sort(); // Sort for consistent ordering
+    
+    const uniqueCategories = Array.from(categoriesSet);
+    
+    // Sort by custom order, unknown categories go to the end
+    return uniqueCategories.sort((a, b) => {
+        const indexA = categoryOrder.indexOf(a);
+        const indexB = categoryOrder.indexOf(b);
+        
+        // If both are in the custom order, sort by that order
+        if (indexA !== -1 && indexB !== -1) {
+            return indexA - indexB;
+        }
+        // If only a is in custom order, it comes first
+        if (indexA !== -1) return -1;
+        // If only b is in custom order, it comes first
+        if (indexB !== -1) return 1;
+        // If neither is in custom order, sort alphabetically
+        return a.localeCompare(b);
+    });
 }
 
 /**
