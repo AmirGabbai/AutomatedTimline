@@ -20,6 +20,11 @@
         <img src="static/images/Course%20Logo%20no%20white%20bg.png" alt="Course logo">
     </a>
 
+    <!-- Info Button -->
+    <button class="info-button" id="infoBtn" aria-label="מידע על הפרויקט">
+        <span>i</span>
+    </button>
+
     <!-- Timeline Container -->
     <div class="timeline-container">
         <div class="timeline-scrollable">
@@ -49,6 +54,66 @@
                 <button id="zoomIn" class="zoom-btn" aria-label="Zoom in" title="Zoom in">
                     <span class="zoom-icon zoom-in-icon" aria-hidden="true"></span>
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Modal Popup -->
+    <div id="infoModal" class="modal info-modal">
+        <div class="modal-content info-modal-content">
+            <!-- Close Button -->
+            <button class="modal-close-btn" id="infoModalCloseBtn" aria-label="Close modal">&times;</button>
+            
+            <!-- Modal Inner Content -->
+            <div class="info-modal-inner">
+                <!-- Modal Header -->
+                <h2 class="info-modal-title">ציר הזמן: גזענות בהיסטוריה גלובלית</h2>
+                
+                <!-- Modal Body - Two columns -->
+                <div class="info-modal-body">
+                    <!-- Left Column - Video -->
+                    <div class="info-modal-video-section">
+                        <div class="info-modal-video-placeholder" id="infoVideoPlaceholder">
+                            <div class="info-play-button">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="info-modal-video" id="infoModalVideo" style="display: none;">
+                            <iframe id="infoVideoIframe" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column - Content Sections -->
+                    <div class="info-modal-content-sections">
+                        <div class="info-section">
+                            <h3 class="info-section-title">הקדמה</h3>
+                            <p class="info-section-text">
+                                ציר הזמן האינטראקטיבי הזה נוצר כחלק מקורס "גזענות בהיסטוריה גלובלית" באוניברסיטת תל אביב. 
+                                הפרויקט מציג אירועים היסטוריים משמעותיים הקשורים לגזענות ולמאבק נגדה לאורך ההיסטוריה האנושית.
+                            </p>
+                        </div>
+                        
+                        <div class="info-section">
+                            <h3 class="info-section-title">איך משתמשים בציר הזמן?</h3>
+                            <p class="info-section-text">
+                                ניתן לגלול את ציר הזמן ימינה ושמאלה באמצעות גרירה או גלגלת העכבר.
+                                לחיצה על אירוע תפתח חלון עם מידע מפורט.
+                                ניתן לסנן את האירועים לפי קטגוריות באמצעות הכפתורים בחלק העליון של המסך.
+                                השתמשו בכפתורי הזום כדי לשנות את רמת הפירוט.
+                            </p>
+                        </div>
+                        
+                        <div class="info-section">
+                            <h3 class="info-section-title">קרדיטים</h3>
+                            <p class="info-section-text">
+                                הפרויקט פותח במסגרת תוכנית מנדל לזכויות האדם ושאר רוח באוניברסיטת תל אביב.
+                                בשיתוף עם האגודה לזכויות האזרח בישראל.
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -2,6 +2,90 @@
 
 let currentEventIndex = -1;
 
+// ==================== INFO MODAL FUNCTIONS ====================
+
+function showInfoModal() {
+    const modal = document.getElementById('infoModal');
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeInfoModal() {
+    const modal = document.getElementById('infoModal');
+    const videoPlaceholder = document.getElementById('infoVideoPlaceholder');
+    const videoContainer = document.getElementById('infoModalVideo');
+    const videoIframe = document.getElementById('infoVideoIframe');
+    
+    // Stop video if playing
+    if (videoIframe) {
+        try {
+            videoIframe.contentWindow?.postMessage('{"event":"command","func":"stopVideo","args":""}', '*');
+        } catch (e) { /* no-op */ }
+        videoIframe.src = '';
+    }
+    
+    // Reset to show placeholder
+    if (videoPlaceholder) videoPlaceholder.style.display = 'flex';
+    if (videoContainer) videoContainer.style.display = 'none';
+    
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+function playInfoVideo() {
+    const videoPlaceholder = document.getElementById('infoVideoPlaceholder');
+    const videoContainer = document.getElementById('infoModalVideo');
+    const videoIframe = document.getElementById('infoVideoIframe');
+    
+    // Replace with your actual YouTube video ID
+    const infoVideoId = 'YOUR_VIDEO_ID_HERE';
+    
+    if (infoVideoId && infoVideoId !== 'YOUR_VIDEO_ID_HERE') {
+        videoIframe.src = `https://www.youtube.com/embed/${infoVideoId}?enablejsapi=1&rel=0&autoplay=1`;
+        videoPlaceholder.style.display = 'none';
+        videoContainer.style.display = 'block';
+    }
+}
+
+function initInfoModal() {
+    const infoBtn = document.getElementById('infoBtn');
+    const infoModalCloseBtn = document.getElementById('infoModalCloseBtn');
+    const infoModal = document.getElementById('infoModal');
+    const videoPlaceholder = document.getElementById('infoVideoPlaceholder');
+    
+    if (infoBtn) {
+        infoBtn.addEventListener('click', showInfoModal);
+    }
+    
+    if (infoModalCloseBtn) {
+        infoModalCloseBtn.addEventListener('click', closeInfoModal);
+    }
+    
+    if (infoModal) {
+        infoModal.addEventListener('click', (e) => {
+            if (e.target === infoModal) {
+                closeInfoModal();
+            }
+        });
+    }
+    
+    if (videoPlaceholder) {
+        videoPlaceholder.addEventListener('click', playInfoVideo);
+    }
+    
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && infoModal && infoModal.classList.contains('active')) {
+            closeInfoModal();
+        }
+    });
+}
+
+// Initialize info modal when DOM is ready
+document.addEventListener('DOMContentLoaded', initInfoModal);
+
+// ==============================================================
+
 function extractYouTubeId(url) {
     if (!url || typeof url !== 'string') return null;
 
