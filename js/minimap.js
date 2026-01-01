@@ -60,7 +60,7 @@ function drawMinimap() {
         const background = eventDiv.getAttribute('data-background') || window.getComputedStyle(eventDiv).backgroundImage || defaultColor;
 
         minimapCtx.fillStyle = getMinimapFillStyle(background, x, mapWidth);
-        const radius = Math.min(barHeight * 0.27, mapWidth / 2, barHeight / 2);
+        const radius = 0;
         drawRoundedRect(minimapCtx, x, y, mapWidth, barHeight, radius);
     });
 }

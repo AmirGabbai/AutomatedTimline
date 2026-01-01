@@ -3,8 +3,8 @@
 function init() {
     zoomInBtn.addEventListener('click', zoomIn);
     zoomOutBtn.addEventListener('click', zoomOut);
-    zoomMinBtn.addEventListener('click', zoomToMin);
-    zoomMaxBtn.addEventListener('click', zoomToMax);
+    if (zoomMinBtn) zoomMinBtn.addEventListener('click', zoomToMin);
+    if (zoomMaxBtn) zoomMaxBtn.addEventListener('click', zoomToMax);
 
     setZoomButtonStates();
 

@@ -4,15 +4,15 @@ const maxZoomIn = 200;
 const maxZoomOut = 28;
 
 function setZoomButtonStates() {
-    if (!zoomInBtn || !zoomOutBtn || !zoomMinBtn || !zoomMaxBtn) return;
+    if (!zoomInBtn || !zoomOutBtn) return;
 
     const atMax = yearWidth >= maxZoomIn;
     const atMin = yearWidth <= maxZoomOut;
 
     zoomInBtn.disabled = atMax;
-    zoomMaxBtn.disabled = atMax;
+    if (zoomMaxBtn) zoomMaxBtn.disabled = atMax;
     zoomOutBtn.disabled = atMin;
-    zoomMinBtn.disabled = atMin;
+    if (zoomMinBtn) zoomMinBtn.disabled = atMin;
 }
 
 function updateZoom(newYearWidth, options = {}) {

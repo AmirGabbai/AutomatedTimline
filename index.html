@@ -36,24 +36,19 @@
             <div id="yearsLayer" class="years-layer"></div>
         </div>
         <div class="timeline-bottom-bar">
+
+            <div class="timeline-minimap" aria-label="Timeline overview">
+                <canvas id="timelineMinimapCanvas"></canvas>
+                <div id="minimapViewport" class="minimap-viewport" aria-hidden="true"></div>
+            </div>
             <!-- Zoom Controls -->
             <div class="controls zoom-control-group" aria-label="Zoom controls">
-                <button id="zoomMin" class="zoom-btn" aria-label="Zoom to minimum" title="Minimum Zoom">
-                    <span class="zoom-icon zoom-min-icon" aria-hidden="true"></span>
-                </button>
                 <button id="zoomOut" class="zoom-btn" aria-label="Zoom out" title="Zoom out">
                     <span class="zoom-icon zoom-out-icon" aria-hidden="true"></span>
                 </button>
                 <button id="zoomIn" class="zoom-btn" aria-label="Zoom in" title="Zoom in">
                     <span class="zoom-icon zoom-in-icon" aria-hidden="true"></span>
                 </button>
-                <button id="zoomMax" class="zoom-btn" aria-label="Zoom to maximum" title="Maximum Zoom">
-                    <span class="zoom-icon zoom-max-icon" aria-hidden="true"></span>
-                </button>
-            </div>
-            <div class="timeline-minimap" aria-label="Timeline overview">
-                <canvas id="timelineMinimapCanvas"></canvas>
-                <div id="minimapViewport" class="minimap-viewport" aria-hidden="true"></div>
             </div>
         </div>
     </div>
