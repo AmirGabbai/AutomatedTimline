@@ -54,6 +54,11 @@ function buildTooltipHTML(event) {
 
     const descriptionPreview = buildTooltipDescription(event);
 
+    const hasVideo = event.links && event.links.some(link => isYouTubeLink(link));
+    const videoIconHTML = hasVideo
+        ? `<img class="tooltip-video-icon" src="static/icons/video-icon-black.svg" alt="Video">`
+        : '';
+
     return `
         <div class="tooltip-hero"></div>
         <div class="tooltip-body">
@@ -61,7 +66,10 @@ function buildTooltipHTML(event) {
                 <div class="tooltip-categories">${categoryCircles}</div>
                 <div class="tooltip-years">${yearsText}</div>
             </div>
-            <div class="tooltip-title">${event.title || ''}</div>
+            <div class="tooltip-title-wrapper">
+                <span class="tooltip-title">${event.title || ''}</span>
+                ${videoIconHTML}
+            </div>
             <div class="tooltip-description">${descriptionPreview}</div>
         </div>
     `;

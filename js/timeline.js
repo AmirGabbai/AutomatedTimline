@@ -156,11 +156,11 @@ function renderEvents() {
         }
     });
 
-    const layerCount = 9;
+    const maxLayers = 20; // Maximum lanes to prevent infinite growth
     const layerSpacing = 75;
     const eventsLayerHeight = (eventsLayer?.clientHeight || eventsLayer?.offsetHeight || 800);
     const eventHeight = 30;
-    const laneOccupancy = Array.from({ length: layerCount }, () => []);
+    const laneOccupancy = []; // Dynamic array - lanes added as needed
 
     visibleEventMap.forEach((event, eventIndex) => {
         let eventDiv = existingEventMap.get(eventIndex);
@@ -171,8 +171,29 @@ function renderEvents() {
             const shouldFadeIn = !isInitialRender && !isZooming;
             eventDiv = document.createElement('div');
             eventDiv.className = 'event' + (shouldFadeIn ? ' fade-in' : '');
+            
+            // Create the title container (positioned above the block)
             const eventTitle = document.createElement('span');
             eventTitle.className = 'event-title';
+
+            // Add category color circles first (appears on the right in RTL)
+            if (event.categories && event.categories.length > 0) {
+                const categoriesContainer = document.createElement('span');
+                categoriesContainer.className = 'event-title-categories';
+                event.categories.forEach(category => {
+                    const circle = document.createElement('span');
+                    circle.className = 'event-title-category-circle';
+                    const categoryColor = categoryColors[category] || defaultColor;
+                    circle.style.backgroundColor = categoryColor;
+                    categoriesContainer.appendChild(circle);
+                });
+                eventTitle.appendChild(categoriesContainer);
+            }
+
+            const titleText = document.createElement('span');
+            titleText.className = 'event-title-text';
+            titleText.textContent = event.title;
+            eventTitle.appendChild(titleText);
 
             if (event.links && event.links.some(link => isYouTubeLink(link))) {
                 const firstYoutubeLink = event.links.find(link => isYouTubeLink(link));
@@ -183,18 +204,18 @@ function renderEvents() {
                 videoLink.rel = 'noopener noreferrer';
                 videoLink.setAttribute('aria-label', `Watch video about ${event.title}`);
                 const videoIcon = document.createElement('img');
-                videoIcon.src = 'static/icons/video-icon-white.svg';
+                videoIcon.src = 'static/icons/video-icon-black.svg';
                 videoIcon.alt = 'Video';
                 videoLink.appendChild(videoIcon);
                 eventTitle.appendChild(videoLink);
             }
 
-            const titleText = document.createElement('span');
-            titleText.className = 'event-title-text';
-            titleText.textContent = event.title;
-            eventTitle.appendChild(titleText);
+            // Create the visual block element
+            const eventBlock = document.createElement('div');
+            eventBlock.className = 'event-block';
 
             eventDiv.appendChild(eventTitle);
+            eventDiv.appendChild(eventBlock);
             eventDiv.setAttribute('data-event-index', eventIndex);
 
             const eventColor = getEventColor(event);
@@ -248,7 +269,10 @@ function renderEvents() {
         }
 
         const eventColor = getEventColor(event);
-        eventDiv.style.background = eventColor;
+        const eventBlockEl = eventDiv.querySelector('.event-block');
+        if (eventBlockEl) {
+            eventBlockEl.style.background = eventColor;
+        }
 
         const eventWidth = eventDurationYears * yearWidth;
         const adjustedWidth = Math.max(eventWidth - 10, 0);
@@ -262,23 +286,47 @@ function renderEvents() {
         if (videoIconEl) {
             videoIconEl.style.display = adjustedWidth < minEventLabelWidth ? 'none' : '';
         }
+        const categoriesEl = eventDiv.querySelector('.event-title-categories');
+        if (categoriesEl) {
+            categoriesEl.style.display = adjustedWidth < minEventLabelWidth ? 'none' : '';
+        }
 
         const leftPosition = (event.start_year - minYear) * yearWidth;
         eventDiv.style.left = `${leftPosition}px`;
 
+        // Minimum gap between events on the same lane (in pixels)
+        const minEventGapPx = 35;
+        // Convert pixel gap to year-equivalent buffer
+        const gapInYears = minEventGapPx / yearWidth;
+
+        // Find an available lane or create a new one
         let laneIndex = 0;
-        for (; laneIndex < layerCount; laneIndex++) {
+        let foundLane = false;
+        for (; laneIndex < laneOccupancy.length; laneIndex++) {
             const laneEvents = laneOccupancy[laneIndex];
             const hasOverlap = laneEvents.some(range => (
-                event.start_year <= range.end && event.end_year >= range.start
+                event.start_year <= (range.end + gapInYears) && event.end_year >= (range.start - gapInYears)
             ));
             if (!hasOverlap) {
+                foundLane = true;
                 break;
             }
         }
 
-        if (laneIndex === layerCount) {
-            laneIndex = layerCount - 1;
+        // If no available lane found, create a new one (up to maxLayers)
+        if (!foundLane) {
+            if (laneOccupancy.length < maxLayers) {
+                laneIndex = laneOccupancy.length;
+                laneOccupancy.push([]);
+            } else {
+                // Fall back to last lane if max reached
+                laneIndex = maxLayers - 1;
+            }
+        }
+
+        // Ensure the lane exists in the array
+        if (!laneOccupancy[laneIndex]) {
+            laneOccupancy[laneIndex] = [];
         }
 
         laneOccupancy[laneIndex].push({
@@ -303,9 +351,11 @@ function renderEvents() {
         }
     });
 
-    activeLayersCount = laneOccupancy.filter(lane => lane.length > 0).length;
+    activeLayersCount = laneOccupancy.filter(lane => lane && lane.length > 0).length;
 
-    const unusedLayers = layerCount - activeLayersCount;
+    // Calculate push-up offset based on used lanes vs a baseline
+    const baselineLayers = 9;
+    const unusedLayers = Math.max(0, baselineLayers - activeLayersCount);
     const maxPushUpOffset = 160;
     const pushUpOffset = Math.min(unusedLayers * layerSpacing, maxPushUpOffset);
 
